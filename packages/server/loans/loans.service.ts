@@ -53,7 +53,7 @@ export const evaluateLoanValue = async (input: LoanEvaluateRequest) => {
     }
 
     const { data, error } = await SupabaseService.getSupabase()
-        .from("evaluated_loans")
+        .from("loans")
         .insert({
             type: input.type,
             period: input.period,
@@ -66,6 +66,8 @@ export const evaluateLoanValue = async (input: LoanEvaluateRequest) => {
             principal: principal,
             interest: interest,
             exchange_rate: exchange_rate,
+            input_wallet_address: input.input_wallet_address,
+            output_wallet_address: input.output_wallet_address,
         })
         .select("id")
         .single();
@@ -81,33 +83,29 @@ export const evaluateLoanValue = async (input: LoanEvaluateRequest) => {
     };
 };
 
-export const acceptLoan = async (
-    id: string,
-    input_wallet_address: string,
-    output_wallet_address: string
-) => {
-    const { error: updateError } = await SupabaseService.getSupabase()
-        .from("evaluated_loans")
+export const acceptLoan = async (id: string) => {
+    const { error } = await SupabaseService.getSupabase()
+        .from("loans")
         .update({
             status: "accepted",
         })
         .eq("id", id)
         .select()
         .single();
-    if (updateError) {
-        console.error(updateError);
-        throw updateError;
+    if (error) {
+        console.error(error);
+        throw error;
     }
+};
 
-    const { error: insertError } = await SupabaseService.getSupabase()
-        .from("accepted_loans")
-        .insert({
-            id: id,
-            input_wallet_address: input_wallet_address,
-            output_wallet_address: output_wallet_address,
-        });
-    if (insertError) {
-        console.error(insertError);
-        throw insertError;
+export const getLoansForUser = async (username: string) => {
+    const { data, error } = await SupabaseService.getSupabase()
+        .from("loans")
+        .select()
+        .eq("username", username);
+    if (error) {
+        console.error(error);
+        throw error;
     }
+    return data;
 };

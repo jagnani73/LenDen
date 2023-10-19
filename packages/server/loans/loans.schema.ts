@@ -71,14 +71,6 @@ export const loanEvaluateRequestSchema = yup.object().shape({
         then: (schema) => schema.trim().required("token_id is required"),
         otherwise: (schema) => schema.strip(),
     }),
-});
-
-export type LoanEvaluateRequest = yup.InferType<
-    typeof loanEvaluateRequestSchema
->;
-
-export const loanAcceptanceRequestSchema = yup.object().shape({
-    id: yup.string().trim().required("id is required"),
     input_wallet_address: yup
         .string()
         .trim()
@@ -89,6 +81,20 @@ export const loanAcceptanceRequestSchema = yup.object().shape({
         .required("output_wallet_address is required"),
 });
 
+export type LoanEvaluateRequest = yup.InferType<
+    typeof loanEvaluateRequestSchema
+>;
+
+export const loanAcceptanceRequestSchema = yup.object().shape({
+    id: yup.string().trim().required("id is required"),
+});
+
 export type LoanAcceptanceRequest = yup.InferType<
     typeof loanAcceptanceRequestSchema
 >;
+
+export const loansRequestSchema = yup.object().shape({
+    username: yup.string().trim().required("username is required"),
+});
+
+export type LoansRequest = yup.InferType<typeof loansRequestSchema>;

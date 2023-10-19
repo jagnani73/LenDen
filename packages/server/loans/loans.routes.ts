@@ -8,10 +8,16 @@ import { validateQuery } from "../middlewares";
 import {
     type LoanEvaluateRequest,
     loanEvaluateRequestSchema,
-    loanAcceptanceRequestSchema,
+    loansRequestSchema,
+    type LoansRequest,
     type LoanAcceptanceRequest,
+    loanAcceptanceRequestSchema,
 } from "./loans.schema";
-import { acceptLoan, evaluateLoanValue } from "./loans.service";
+import {
+    acceptLoan,
+    evaluateLoanValue,
+    getLoansForUser,
+} from "./loans.service";
 
 export const loansRouter = Router();
 
@@ -45,11 +51,27 @@ const handleLoanAcceptance = async (
     next: NextFunction
 ) => {
     try {
-        const { id, input_wallet_address, output_wallet_address } =
-            req.body as LoanAcceptanceRequest;
-        await acceptLoan(id, input_wallet_address, output_wallet_address);
+        const { id } = req.body as LoanAcceptanceRequest;
+        await acceptLoan(id);
         res.json({
             success: true,
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+const handleFetchLoans = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const { username } = req.params as LoansRequest;
+        const loans = await getLoansForUser(username);
+        res.json({
+            success: true,
+            loans: loans,
         });
     } catch (err) {
         next(err);
@@ -65,4 +87,9 @@ loansRouter.post(
     "/accept",
     validateQuery("body", loanAcceptanceRequestSchema),
     handleLoanAcceptance
+);
+loansRouter.get(
+    "/:username",
+    validateQuery("params", loansRequestSchema),
+    handleFetchLoans
 );
