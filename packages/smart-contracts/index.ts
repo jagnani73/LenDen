@@ -1,6 +1,6 @@
 import express, { type Express, type Request, type Response } from "express";
 import { config as DotenvConfig } from "dotenv";
-import ethNftRoutes from "./src/eth/nft/nft.routes";
+import ethNftRoutes from "./src/polygon/nft/nft.routes";
 
 DotenvConfig();
 const app: Express = express();
