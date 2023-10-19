@@ -5,13 +5,11 @@ import {
     type NextFunction,
 } from "express";
 import {
-    transferNFTToUser,
-    transferNFTToAdmin,
-    transferTokenToUser,
-    transferTokenToAdmin,
-} from "./avax.service";
+    transferNFT,
+    transferToken
+} from "./assets.services";
 
-export const avaxRouter = Router();
+export const assetsRouter = Router();
 
 const handleTransferNFTToAdmin = async (
     req: Request,
@@ -19,11 +17,13 @@ const handleTransferNFTToAdmin = async (
     next: NextFunction
 ) => {
     try {
-        const { collection_address, token_id, wallet } = req.body;
-        const hash = await transferNFTToAdmin(
+        const { collection_address, token_id, wallet, chain } = req.body;
+        const hash = await transferNFT(
             wallet,
             token_id,
-            collection_address
+            collection_address,
+            chain,
+            "collateral"
         );
         res.json({
             success: true,
@@ -39,11 +39,13 @@ const handleTransferNFTToUser = async (
     next: NextFunction
 ) => {
     try {
-        const { collection_address, token_id, wallet } = req.body;
-        const hash = await transferNFTToUser(
+        const { collection_address, token_id, wallet, chain } = req.body;
+        const hash = await transferNFT(
             wallet,
             token_id,
-            collection_address
+            collection_address,
+            chain,
+            "repayment"
         );
         res.json({
             success: true,
@@ -60,8 +62,8 @@ const handleTransferTokenToAdmin = async (
     next: NextFunction
 ) => {
     try {
-        const { amount, wallet } = req.body;
-        const hash = await transferTokenToAdmin(amount, wallet);
+        const { amount, wallet, chain } = req.body;
+        const hash = await transferToken(amount, wallet, chain, "collateral");
         res.json({
             success: true,
             transaction_hash: hash,
@@ -77,8 +79,8 @@ const handleTransferTokenToUser = async (
     next: NextFunction
 ) => {
     try {
-        const { amount, wallet } = req.body;
-        const hash = await transferTokenToUser(amount, wallet);
+        const { amount, wallet, chain } = req.body;
+        const hash = await transferToken(amount, wallet, chain, "repayment");
         res.json({
             success: true,
             transaction_hash: hash,
@@ -88,7 +90,7 @@ const handleTransferTokenToUser = async (
     }
 };
 
-avaxRouter.post("/nft/transfer-to-admin", handleTransferNFTToAdmin);
-avaxRouter.post("/nft/transfer-to-user", handleTransferNFTToUser);
-avaxRouter.post("/token/transfer-to-admin", handleTransferTokenToAdmin);
-avaxRouter.post("/token/transfer-to-user", handleTransferTokenToUser);
+assetsRouter.post("/nft/transfer-to-admin", handleTransferNFTToAdmin);
+assetsRouter.post("/nft/transfer-to-user", handleTransferNFTToUser);
+assetsRouter.post("/token/transfer-to-admin", handleTransferTokenToAdmin);
+assetsRouter.post("/token/transfer-to-user", handleTransferTokenToUser);

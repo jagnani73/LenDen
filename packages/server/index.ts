@@ -9,8 +9,7 @@ import { usersRouter } from "./users/users.routes";
 import { type PostgrestError } from "@supabase/supabase-js";
 import { loansRouter } from "./loans/loans.routes";
 import { bidsRouter } from "./bids/bids.routes";
-import { avaxRouter } from "./avax/avax.routes";
-import { polygonRouter } from "./polygon/polygon.routes";
+import { assetsRouter } from "./assets/assets.routes";
 import crossChainNFTRouter from "./cross-chain-nft/cross-chain-nft.routes";
 
 DotenvConfig();
@@ -27,8 +26,7 @@ app.get("/api/v1/healthcheck", (_req: Request, res: Response) => {
 app.use("/api/v1/users", usersRouter);
 app.use("/api/v1/loans", loansRouter);
 app.use("/api/v1/bids", bidsRouter);
-app.use("/api/v1/avax", avaxRouter);
-app.use("/api/v1/polygon", polygonRouter);
+app.use("/api/v1/assets", assetsRouter);
 app.use("/api/v1/cross-chain-nft", crossChainNFTRouter);
 app.use("*", (_req: Request, res: Response) => {
     res.status(404).json({
