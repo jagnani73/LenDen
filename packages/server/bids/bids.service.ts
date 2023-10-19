@@ -34,3 +34,16 @@ export const createBidItems = async (loan_id: string, amount: number) => {
 
     return data;
 };
+
+export const fetchBids = async (loan_id: string) => {
+    const { data, error } = await SupabaseService.getSupabase()
+        .from("bids")
+        .select()
+        .eq("loan_id", loan_id)
+        .order("amount", { ascending: false });
+    if (error) {
+        console.error(error);
+        throw error;
+    }
+    return data;
+};

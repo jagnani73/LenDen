@@ -6,3 +6,9 @@ export const bidRequestSchema = yup.object().shape({
 });
 
 export type BidRequest = yup.InferType<typeof bidRequestSchema>;
+
+export const bidsRequestSchema = yup.object().shape({
+    loan_id: yup.string().trim().required("loan_id is required"),
+});
+
+export type BidsRequest = yup.InferType<typeof bidsRequestSchema>;

@@ -4,14 +4,19 @@ import {
     type Response,
     type NextFunction,
 } from "express";
-import { type BidRequest, bidRequestSchema } from "./bids.schema";
-import { createBidItems, fetchBidItems } from "./bids.service";
+import {
+    type BidRequest,
+    bidRequestSchema,
+    bidsRequestSchema,
+    type BidsRequest,
+} from "./bids.schema";
+import { createBidItems, fetchBidItems, fetchBids } from "./bids.service";
 import { validateQuery } from "../middlewares";
 
 export const bidsRouter = Router();
 
 const handleFetchBidsItems = async (
-    req: Request,
+    _req: Request,
     res: Response,
     next: NextFunction
 ) => {
@@ -42,5 +47,27 @@ const handleCreateBid = async (
     }
 };
 
+const handleFetchBids = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const { loan_id } = req.body as BidsRequest;
+        const bids = await fetchBids(loan_id);
+        res.json({
+            success: true,
+            bids: bids,
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
 bidsRouter.get("/", handleFetchBidsItems);
 bidsRouter.post("/", validateQuery("body", bidRequestSchema), handleCreateBid);
+bidsRouter.get(
+    "/:loan_id",
+    validateQuery("body", bidsRequestSchema),
+    handleFetchBids
+);
