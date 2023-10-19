@@ -46,6 +46,7 @@ export const loanEvaluateRequestSchema = yup.object().shape({
         .trim()
         .required("period_unit is required"),
     start_time: yup.date().required("start_time is required"),
+    username: yup.string().trim().required("username is required"),
     input_ticker: yup
         .string()
         .oneOf(Object.values(TICKER))

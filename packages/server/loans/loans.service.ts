@@ -68,6 +68,7 @@ export const evaluateLoanValue = async (input: LoanEvaluateRequest) => {
             exchange_rate: exchange_rate,
             input_wallet_address: input.input_wallet_address,
             output_wallet_address: input.output_wallet_address,
+            username: input.username,
         })
         .select("id")
         .single();
@@ -107,7 +108,36 @@ export const getLoansForUser = async (username: string) => {
         console.error(error);
         throw error;
     }
-    return data;
+
+    const loans = [];
+    for (const loan of data) {
+        const weeks_passed = Math.floor(
+            (new Date().getTime() - new Date(loan.start_time).getTime()) /
+                (1000 * 60 * 60 * 24 * 7)
+        );
+        const warning_intensity: number = Math.max(
+            0,
+            Math.min(4, weeks_passed - loan.period)
+        );
+        if (warning_intensity !== loan.warning_intensity) {
+            const { error } = await SupabaseService.getSupabase()
+                .from("loans")
+                .update({
+                    warning_intensity: warning_intensity,
+                })
+                .eq("id", loan.id);
+            if (error) {
+                console.error(error);
+                throw error;
+            }
+            loan.warning_intensity = warning_intensity;
+        }
+        loans.push(loan);
+        if (warning_intensity === 4) {
+            // move to bidding
+        }
+    }
+    return loans;
 };
 
 export const repaymentLoan = async (id: string) => {
