@@ -119,11 +119,22 @@ export const getLoansForUser = async (username: string) => {
             0,
             Math.min(4, weeks_passed - loan.period)
         );
-        if (warning_intensity !== loan.warning_intensity) {
+        const additional_interest: number = Math.max(
+            0,
+            weeks_passed - loan.period
+        );
+        if (
+            warning_intensity !== loan.warning_intensity ||
+            additional_interest !== loan.additional_interest
+        ) {
+            const new_principal =
+                loan.principal + (additional_interest / 100) * loan.principal;
             const { error } = await SupabaseService.getSupabase()
                 .from("loans")
                 .update({
                     warning_intensity: warning_intensity,
+                    additional_interest: additional_interest,
+                    principal: new_principal,
                 })
                 .eq("id", loan.id);
             if (error) {
@@ -131,6 +142,8 @@ export const getLoansForUser = async (username: string) => {
                 throw error;
             }
             loan.warning_intensity = warning_intensity;
+            loan.additional_interest = additional_interest;
+            loan.principal = new_principal;
         }
         loans.push(loan);
         if (warning_intensity === 4) {
