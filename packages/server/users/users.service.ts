@@ -1,16 +1,21 @@
 import { sign } from "jsonwebtoken";
 import { SupabaseService } from "../services";
 import { type UserSignUpRequest } from "./users.schema";
+import { type TICKER } from "../loans/loans.schema";
+import { compare, hash } from "bcrypt";
 
 export const userSignUp = async (
     username: string,
-    wallet_address: string,
+    password: string,
+    wallet_addresses: Record<TICKER, string>,
     signature: string
 ) => {
+    const hashed_password = await hash(password, 12);
     const { error } = await SupabaseService.getSupabase().from("users").insert({
         username: username,
-        wallet_address: wallet_address,
+        wallet_addresses: wallet_addresses,
         signature: signature,
+        hashed_password: hashed_password,
     });
     if (error) {
         console.error(error);
@@ -18,27 +23,35 @@ export const userSignUp = async (
     }
 };
 
-export const userExists = async (wallet_address: string) => {
+export const userAuthentication = async (
+    username: string,
+    password: string
+) => {
     const { data: user, error } = await SupabaseService.getSupabase()
         .from("users")
-        .select("wallet_address, username")
-        .eq("wallet_address", wallet_address)
+        .select("username, hashed_password, wallet_addresses")
+        .eq("username", username)
         .single();
     if (error) {
         console.error(error);
         throw error;
     }
-    return user as UserSignUpRequest;
+    const authenticated = await compare(password, user.hashed_password);
+    if (authenticated) {
+        return user;
+    } else {
+        throw Error("invalid credentials");
+    }
 };
 
 export const createJWToken = (
-    wallet_address: string,
+    wallet_addresses: Record<TICKER, string>,
     username: string
 ): string => {
     if (process.env.JWT_SECRET) {
         const token = sign(
             {
-                wallet_address: wallet_address,
+                wallet_addresses: wallet_addresses,
                 username: username,
             },
             process.env.JWT_SECRET,

@@ -11,7 +11,7 @@ import {
     userSignInRequestSchema,
     type UserSignInRequest,
 } from "./users.schema";
-import { createJWToken, userExists, userSignUp } from "./users.service";
+import { createJWToken, userAuthentication, userSignUp } from "./users.service";
 
 export const usersRouter = Router();
 
@@ -21,9 +21,9 @@ const handleUserSignUp = async (
     next: NextFunction
 ) => {
     try {
-        const { signature, username, wallet_address } =
+        const { signature, username, wallet_addresses, password } =
             req.body as UserSignUpRequest;
-        await userSignUp(username, wallet_address, signature);
+        await userSignUp(username, password, wallet_addresses, signature);
         res.json({
             success: true,
         });
@@ -38,10 +38,10 @@ const handleUserSignIn = async (
     next: NextFunction
 ) => {
     try {
-        const { wallet_address } = req.body as UserSignInRequest;
-        const user = await userExists(wallet_address);
+        const { password, username } = req.body as UserSignInRequest;
+        const user = await userAuthentication(username, password);
         if (user) {
-            const token = createJWToken(user.wallet_address, user.username);
+            const token = createJWToken(user.wallet_addresses, user.username);
             res.json({
                 success: true,
                 token: token,
