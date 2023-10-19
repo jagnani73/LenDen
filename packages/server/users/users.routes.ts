@@ -21,9 +21,9 @@ const handleUserSignUp = async (
     next: NextFunction
 ) => {
     try {
-        const { signature, username, wallet_addresses, password } =
+        const { username, wallet_addresses, password } =
             req.body as UserSignUpRequest;
-        await userSignUp(username, password, wallet_addresses, signature);
+        await userSignUp(username, password, wallet_addresses);
         res.json({
             success: true,
         });

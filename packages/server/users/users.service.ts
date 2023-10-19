@@ -1,20 +1,20 @@
 import { sign } from "jsonwebtoken";
 import { SupabaseService } from "../services";
-import { type UserSignUpRequest } from "./users.schema";
 import { type TICKER } from "../loans/loans.schema";
 import { compare, hash } from "bcrypt";
 
 export const userSignUp = async (
     username: string,
     password: string,
-    wallet_addresses: Record<TICKER, string>,
-    signature: string
+    wallet_addresses: Record<
+        TICKER,
+        { wallet_address: string; signature: string }
+    >
 ) => {
     const hashed_password = await hash(password, 12);
     const { error } = await SupabaseService.getSupabase().from("users").insert({
         username: username,
         wallet_addresses: wallet_addresses,
-        signature: signature,
         hashed_password: hashed_password,
     });
     if (error) {

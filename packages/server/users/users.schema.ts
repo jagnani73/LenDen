@@ -7,11 +7,16 @@ export const userSignUpRequestSchema = yup.object({
     wallet_addresses: yup
         .object()
         .shape({
-            [TICKER.MATIC]: yup.string().trim().required(),
-            [TICKER.SOL]: yup.string().trim().required(),
+            [TICKER.MATIC]: yup.object().shape({
+                wallet_address: yup.string().trim().required(),
+                signature: yup.string().trim().required(),
+            }),
+            [TICKER.SOL]: yup.object().shape({
+                wallet_address: yup.string().trim().required(),
+                signature: yup.string().trim().required(),
+            }),
         })
         .required("wallet_address is required"),
-    signature: yup.string().trim().required("signature is required"),
 });
 
 export type UserSignUpRequest = yup.InferType<typeof userSignUpRequestSchema>;
