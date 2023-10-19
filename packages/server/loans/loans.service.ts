@@ -5,7 +5,11 @@ import {
     TOKEN_ID,
     type CoinMarketCapPriceConversionResponse,
 } from "./loans.schema";
-import { CoinMarketCapService, SupabaseService } from "../services";
+import {
+    CoinMarketCapService,
+    CovalentService,
+    SupabaseService,
+} from "../services";
 
 export const evaluateLoanValue = async (input: LoanEvaluateRequest) => {
     const input_id =
@@ -49,6 +53,21 @@ export const evaluateLoanValue = async (input: LoanEvaluateRequest) => {
             exchange_rate = data.quote[output_id].price;
             principal = exchange_rate + (interest / 2 / 100) * exchange_rate;
             break;
+        }
+        case INPUT_TYPE.NFT: {
+            console.log(1);
+            const { data: nftData } =
+                await CovalentService.getCovalentClient().NftService.getNftMarketFloorPrice(
+                    "avalanche-testnet",
+                    input.mint_address as string
+                    // {
+                    //     days: 1,
+                    //     quoteCurrency: "USD",
+                    // }
+                );
+            if (!nftData) {
+                principal = 4.67936;
+            }
         }
     }
 

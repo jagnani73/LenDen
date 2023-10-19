@@ -1,6 +1,10 @@
 import express, { type Express, type Request, type Response } from "express";
 import { config as DotenvConfig } from "dotenv";
-import { CoinMarketCapService, SupabaseService } from "./services";
+import {
+    CoinMarketCapService,
+    CovalentService,
+    SupabaseService,
+} from "./services";
 import { usersRouter } from "./users/users.routes";
 import { type PostgrestError } from "@supabase/supabase-js";
 import { loansRouter } from "./loans/loans.routes";
@@ -39,6 +43,7 @@ app.use((err: Error | PostgrestError, _req: Request, res: Response) => {
 
 Promise.all([
     CoinMarketCapService.initService(),
+    CovalentService.initCovalentClient(),
     SupabaseService.initSupabase(),
 ])
     .then(() => {
