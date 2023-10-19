@@ -9,9 +9,9 @@ import {
     transferNFTToAdmin,
     transferTokenToUser,
     transferTokenToAdmin,
-} from "./avax.service";
+} from "./polygon.services";
 
-export const avaxRouter = Router();
+export const polygonRouter = Router();
 
 const handleTransferNFTToAdmin = async (
     req: Request,
@@ -88,7 +88,7 @@ const handleTransferTokenToUser = async (
     }
 };
 
-avaxRouter.post("/nft/transfer-to-admin", handleTransferNFTToAdmin);
-avaxRouter.post("/nft/transfer-to-user", handleTransferNFTToUser);
-avaxRouter.post("/token/transfer-to-admin", handleTransferTokenToAdmin);
-avaxRouter.post("/token/transfer-to-user", handleTransferTokenToUser);
+polygonRouter.post("/nft/transfer-to-admin", handleTransferNFTToAdmin);
+polygonRouter.post("/nft/transfer-to-user", handleTransferNFTToUser);
+polygonRouter.post("/token/transfer-to-admin", handleTransferTokenToAdmin);
+polygonRouter.post("/token/transfer-to-user", handleTransferTokenToUser);
