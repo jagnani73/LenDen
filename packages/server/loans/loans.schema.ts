@@ -24,12 +24,12 @@ export enum INPUT_PERIOD_UNIT {
 }
 
 export enum TICKER {
-    SOL = "SOL",
+    AVAX = "AVAX",
     MATIC = "MATIC",
 }
 
 export enum TOKEN_ID {
-    SOLANA = 5426,
+    AVAX = 5805,
     MATIC = 3890,
 }
 

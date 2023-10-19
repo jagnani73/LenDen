@@ -11,7 +11,7 @@ export const userSignUpRequestSchema = yup.object({
                 wallet_address: yup.string().trim().required(),
                 signature: yup.string().trim().required(),
             }),
-            [TICKER.SOL]: yup.object().shape({
+            [TICKER.AVAX]: yup.object().shape({
                 wallet_address: yup.string().trim().required(),
                 signature: yup.string().trim().required(),
             }),

@@ -13,9 +13,9 @@ import {
 
 export const evaluateLoanValue = async (input: LoanEvaluateRequest) => {
     const input_id =
-        input.input_ticker === TICKER.SOL ? TOKEN_ID.SOLANA : TOKEN_ID.MATIC;
+        input.input_ticker === TICKER.AVAX ? TOKEN_ID.AVAX : TOKEN_ID.MATIC;
     const output_id =
-        input.input_ticker === TICKER.MATIC ? TOKEN_ID.SOLANA : TOKEN_ID.MATIC;
+        input.input_ticker === TICKER.MATIC ? TOKEN_ID.AVAX : TOKEN_ID.MATIC;
 
     let principal: number = 0,
         interest: number = 0,
