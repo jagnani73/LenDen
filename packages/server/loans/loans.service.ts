@@ -59,11 +59,11 @@ export const evaluateLoanValue = async (input: LoanEvaluateRequest) => {
             const { data: nftData } =
                 await CovalentService.getCovalentClient().NftService.getNftMarketFloorPrice(
                     "avalanche-testnet",
-                    input.mint_address as string
-                    // {
-                    //     days: 1,
-                    //     quoteCurrency: "USD",
-                    // }
+                    input.mint_address as string,
+                    {
+                        days: 1,
+                        quoteCurrency: "USD",
+                    }
                 );
             if (!nftData) {
                 principal = 4.67936;
@@ -164,10 +164,20 @@ export const getLoansForUser = async (username: string) => {
             loan.additional_interest = additional_interest;
             loan.principal = new_principal;
         }
-        loans.push(loan);
         if (warning_intensity === 4) {
-            // move to bidding
+            const { error } = await SupabaseService.getSupabase()
+                .from("loans")
+                .update({
+                    status: "bidding",
+                })
+                .eq("id", loan.id);
+            if (error) {
+                console.error(error);
+                throw error;
+            }
+            loan.status = "bidding";
         }
+        loans.push(loan);
     }
     return loans;
 };
