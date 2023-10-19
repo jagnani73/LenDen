@@ -80,3 +80,34 @@ export const evaluateLoanValue = async (input: LoanEvaluateRequest) => {
         interest: interest,
     };
 };
+
+export const acceptLoan = async (
+    id: string,
+    input_wallet_address: string,
+    output_wallet_address: string
+) => {
+    const { error: updateError } = await SupabaseService.getSupabase()
+        .from("evaluated_loans")
+        .update({
+            status: "accepted",
+        })
+        .eq("id", id)
+        .select()
+        .single();
+    if (updateError) {
+        console.error(updateError);
+        throw updateError;
+    }
+
+    const { error: insertError } = await SupabaseService.getSupabase()
+        .from("accepted_loans")
+        .insert({
+            id: id,
+            input_wallet_address: input_wallet_address,
+            output_wallet_address: output_wallet_address,
+        });
+    if (insertError) {
+        console.error(insertError);
+        throw insertError;
+    }
+};

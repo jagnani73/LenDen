@@ -8,8 +8,10 @@ import { validateQuery } from "../middlewares";
 import {
     type LoanEvaluateRequest,
     loanEvaluateRequestSchema,
+    loanAcceptanceRequestSchema,
+    type LoanAcceptanceRequest,
 } from "./loans.schema";
-import { evaluateLoanValue } from "./loans.service";
+import { acceptLoan, evaluateLoanValue } from "./loans.service";
 
 export const loansRouter = Router();
 
@@ -37,8 +39,30 @@ const handleLoanEvaluation = async (
     }
 };
 
+const handleLoanAcceptance = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const { id, input_wallet_address, output_wallet_address } =
+            req.body as LoanAcceptanceRequest;
+        await acceptLoan(id, input_wallet_address, output_wallet_address);
+        res.json({
+            success: true,
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
 loansRouter.post(
     "/evaluate",
     validateQuery("body", loanEvaluateRequestSchema),
     handleLoanEvaluation
+);
+loansRouter.post(
+    "/accept",
+    validateQuery("body", loanAcceptanceRequestSchema),
+    handleLoanAcceptance
 );

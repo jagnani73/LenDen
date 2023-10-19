@@ -1,5 +1,19 @@
 import * as yup from "yup";
 
+export interface CoinMarketCapPriceConversionResponse {
+    id: number;
+    symbol: string;
+    name: string;
+    amount: number;
+    last_updated: string;
+    quote: {
+        [key: string]: {
+            price: number;
+            last_updated: string;
+        };
+    };
+}
+
 export enum INPUT_TYPE {
     NFT = "nft",
     TOKEN = "token",
@@ -63,16 +77,18 @@ export type LoanEvaluateRequest = yup.InferType<
     typeof loanEvaluateRequestSchema
 >;
 
-export interface CoinMarketCapPriceConversionResponse {
-    id: number;
-    symbol: string;
-    name: string;
-    amount: number;
-    last_updated: string;
-    quote: {
-        [key: string]: {
-            price: number;
-            last_updated: string;
-        };
-    };
-}
+export const loanAcceptanceRequestSchema = yup.object().shape({
+    id: yup.string().trim().required("id is required"),
+    input_wallet_address: yup
+        .string()
+        .trim()
+        .required("input_wallet_address is required"),
+    output_wallet_address: yup
+        .string()
+        .trim()
+        .required("output_wallet_address is required"),
+});
+
+export type LoanAcceptanceRequest = yup.InferType<
+    typeof loanAcceptanceRequestSchema
+>;
