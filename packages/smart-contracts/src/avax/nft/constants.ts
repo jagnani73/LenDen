@@ -374,3 +374,4 @@ export const ABI = [
             "type": "event"
         }
     ]
+
