@@ -13,17 +13,18 @@ import { evaluateLoanValue } from "./loans.service";
 
 export const loansRouter = Router();
 
-const handleUserSignUp = async (
+const handleLoanEvaluation = async (
     req: Request,
     res: Response,
     next: NextFunction
 ) => {
     try {
         const data = req.body as LoanEvaluateRequest;
-        const { interest, principal } = await evaluateLoanValue(data);
+        const { id, interest, principal } = await evaluateLoanValue(data);
         res.json({
             success: true,
             evaluation: {
+                id: id,
                 interest: interest,
                 principal: principal,
                 output_ticker: data.output_ticker,
@@ -39,5 +40,5 @@ const handleUserSignUp = async (
 loansRouter.post(
     "/evaluate",
     validateQuery("body", loanEvaluateRequestSchema),
-    handleUserSignUp
+    handleLoanEvaluation
 );

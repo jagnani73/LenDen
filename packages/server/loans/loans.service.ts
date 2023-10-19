@@ -5,7 +5,7 @@ import {
     TOKEN_ID,
     type CoinMarketCapPriceConversionResponse,
 } from "./loans.schema";
-import { CoinMarketCapService } from "../services";
+import { CoinMarketCapService, SupabaseService } from "../services";
 
 export const evaluateLoanValue = async (input: LoanEvaluateRequest) => {
     const input_id =
@@ -14,7 +14,8 @@ export const evaluateLoanValue = async (input: LoanEvaluateRequest) => {
         input.input_ticker === TICKER.MATIC ? TOKEN_ID.SOLANA : TOKEN_ID.MATIC;
 
     let principal: number = 0,
-        interest: number = 0;
+        interest: number = 0,
+        exchange_rate: number = 1;
 
     switch (input.period) {
         case 1: {
@@ -45,13 +46,36 @@ export const evaluateLoanValue = async (input: LoanEvaluateRequest) => {
             );
             const data = response.data
                 .data as CoinMarketCapPriceConversionResponse;
-            const exchange_rate = data.quote[output_id].price;
+            exchange_rate = data.quote[output_id].price;
             principal = exchange_rate + (interest / 2 / 100) * exchange_rate;
             break;
         }
     }
 
+    const { data, error } = await SupabaseService.getSupabase()
+        .from("evaluated_loans")
+        .insert({
+            type: input.type,
+            period: input.period,
+            period_unit: input.period_unit,
+            input_ticker: input.input_ticker,
+            output_ticker: input.output_ticker,
+            amount: input.amount ?? null,
+            mint_address: input.mint_address ?? null,
+            token_id: input.token_id ?? null,
+            principal: principal,
+            interest: interest,
+            exchange_rate: exchange_rate,
+        })
+        .select("id")
+        .single();
+    if (error) {
+        console.error(error);
+        throw error;
+    }
+
     return {
+        id: data.id,
         principal: principal,
         interest: interest,
     };
