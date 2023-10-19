@@ -109,3 +109,18 @@ export const getLoansForUser = async (username: string) => {
     }
     return data;
 };
+
+export const repaymentLoan = async (id: string) => {
+    const { error } = await SupabaseService.getSupabase()
+        .from("loans")
+        .update({
+            status: "repayed",
+        })
+        .eq("id", id)
+        .select()
+        .single();
+    if (error) {
+        console.error(error);
+        throw error;
+    }
+};

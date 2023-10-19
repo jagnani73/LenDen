@@ -12,11 +12,14 @@ import {
     type LoansRequest,
     type LoanAcceptanceRequest,
     loanAcceptanceRequestSchema,
+    type LoanRepaymentRequest,
+    loanRepaymentRequestSchema,
 } from "./loans.schema";
 import {
     acceptLoan,
     evaluateLoanValue,
     getLoansForUser,
+    repaymentLoan,
 } from "./loans.service";
 
 export const loansRouter = Router();
@@ -78,6 +81,23 @@ const handleFetchLoans = async (
     }
 };
 
+const handleRepayLoans = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const { id } = req.params as LoanRepaymentRequest;
+        const loans = await repaymentLoan(id);
+        res.json({
+            success: true,
+            loans: loans,
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
 loansRouter.post(
     "/evaluate",
     validateQuery("body", loanEvaluateRequestSchema),
@@ -87,6 +107,11 @@ loansRouter.post(
     "/accept",
     validateQuery("body", loanAcceptanceRequestSchema),
     handleLoanAcceptance
+);
+loansRouter.post(
+    "/repayment",
+    validateQuery("body", loanRepaymentRequestSchema),
+    handleRepayLoans
 );
 loansRouter.get(
     "/:username",

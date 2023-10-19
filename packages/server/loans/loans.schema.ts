@@ -98,3 +98,11 @@ export const loansRequestSchema = yup.object().shape({
 });
 
 export type LoansRequest = yup.InferType<typeof loansRequestSchema>;
+
+export const loanRepaymentRequestSchema = yup.object().shape({
+    id: yup.string().trim().required("id is required"),
+});
+
+export type LoanRepaymentRequest = yup.InferType<
+    typeof loanRepaymentRequestSchema
+>;
