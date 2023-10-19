@@ -1,76 +1,57 @@
 import { ethers } from "ethers";
-import { ABI } from "./polygon.schema";
+import { ABI } from "./assets.schema";
+import { TICKER } from "../loans/loans.schema";
 
 export const transferNFT = async (
     wallet: string,
     token_id: string,
     collection_address: string,
-    chain: string,
+    ticker: TICKER,
     mode: "collateral" | "repayment"
 ) => {
+    const isPolygon = ticker === TICKER.MATIC;
     const provider = new ethers.JsonRpcProvider(
-        chain === "polygon"
+        isPolygon
             ? process.env.RPC_ENDPOINT_POLYGON
             : process.env.RPC_ENDPOINT_AVAX
     );
-    if (mode === "collateral") {
-        const signer = new ethers.Wallet(wallet, provider);
-        const contract = new ethers.Contract(collection_address, ABI, signer);
-        const txn = await contract.safeTransferFrom(
-            signer.address,
-            process.env.DEV_ADDRESS,
-            token_id
-        );
-        await txn.wait();
-        return txn.hash;
-    } else if (mode === "repayment") {
-        const signer = new ethers.Wallet(process.env.DEV_PK!, provider);
-        const contract = new ethers.Contract(collection_address, ABI, signer);
-        const txn = await contract.safeTransferFrom(
-            signer.address,
-            wallet,
-            token_id
-        );
-        await txn.wait();
-        return txn.hash;
-    }
+    const signer =
+        mode === "collateral"
+            ? new ethers.Wallet(wallet, provider)
+            : new ethers.Wallet(process.env.DEV_PK!, provider);
+    const recipient = mode === "collateral" ? process.env.DEV_ADDRESS : wallet;
+    const contract = new ethers.Contract(collection_address, ABI, signer);
+    const txn = await contract.safeTransferFrom(
+        signer.address,
+        recipient,
+        token_id
+    );
+    await txn.wait();
+    return txn.hash;
 };
 
 export const transferToken = async (
     amount: string,
     wallet: string,
-    chain: string,
+    ticker: TICKER,
     mode: "collateral" | "repayment"
 ) => {
     const provider = new ethers.JsonRpcProvider(
-        chain === "polygon"
+        ticker === TICKER.MATIC
             ? process.env.RPC_ENDPOINT_POLYGON
             : process.env.RPC_ENDPOINT_AVAX
     );
-
-    if (mode === "collateral") {
-        const signer = new ethers.Wallet(wallet, provider);
-        const transactionParams = {
-            from: signer.address,
-            to: process.env.DEV_ADDRESS,
-            data: "0x",
-            value: ethers.parseEther(amount),
-        };
-        const txn = await signer.sendTransaction(transactionParams);
-
-        await txn.wait();
-        return txn.hash;
-    } else if (mode === "repayment") {
-        const signer = new ethers.Wallet(process.env.DEV_PK!, provider);
-        const transactionParams = {
-            from: process.env.DEV_ADDRESS,
-            to: wallet,
-            data: "0x",
-            value: ethers.parseEther(amount),
-        };
-        const txn = await signer.sendTransaction(transactionParams);
-
-        await txn.wait();
-        return txn.hash;
-    }
+    const transactionParams = {
+        from: mode === "collateral" ? wallet : process.env.DEV_ADDRESS,
+        to: mode === "collateral" ? process.env.DEV_ADDRESS : wallet,
+        data: "0x",
+        value: ethers.parseEther(amount),
+    };
+    const signer = new ethers.Wallet(
+        mode === "collateral" ? wallet : process.env.DEV_PK!,
+        provider
+    );
+    const txn = await signer.sendTransaction(transactionParams);
+    await txn.wait();
+    return txn.hash;
 };
