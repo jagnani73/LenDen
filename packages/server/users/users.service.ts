@@ -1,5 +1,6 @@
 import { sign } from "jsonwebtoken";
 import { SupabaseService } from "../services";
+import { type UserSignUpRequest } from "./users.schema";
 
 export const userSignUp = async (
     username: string,
@@ -27,7 +28,7 @@ export const userExists = async (wallet_address: string) => {
         console.error(error);
         throw error;
     }
-    return user as { wallet_address: string; username: string };
+    return user as UserSignUpRequest;
 };
 
 export const createJWToken = (

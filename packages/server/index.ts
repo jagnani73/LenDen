@@ -1,8 +1,9 @@
 import express, { type Express, type Request, type Response } from "express";
 import { config as DotenvConfig } from "dotenv";
-import { SupabaseService } from "./services";
+import { CoinMarketCapService, SupabaseService } from "./services";
 import { usersRouter } from "./users/users.routes";
 import { type PostgrestError } from "@supabase/supabase-js";
+import { loansRouter } from "./loans/loans.routes";
 
 DotenvConfig();
 const app: Express = express();
@@ -16,6 +17,7 @@ app.get("/api/v1/healthcheck", (_req: Request, res: Response) => {
     });
 });
 app.use("/api/v1/users", usersRouter);
+app.use("/api/v1/loans", loansRouter);
 app.use("*", (_req: Request, res: Response) => {
     res.status(404).json({
         success: false,
@@ -35,7 +37,10 @@ app.use((err: Error | PostgrestError, _req: Request, res: Response) => {
     }
 });
 
-Promise.all([SupabaseService.initSupabase()])
+Promise.all([
+    CoinMarketCapService.initService(),
+    SupabaseService.initSupabase(),
+])
     .then(() => {
         const port: number = 8080;
         app.listen(port, () => {

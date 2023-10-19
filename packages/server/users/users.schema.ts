@@ -8,7 +8,7 @@ export const userSignUpRequestSchema = yup.object({
 
 export type UserSignUpRequest = yup.InferType<typeof userSignUpRequestSchema>;
 
-export const userSignInRequestSchema = yup.object({
+export const userSignInRequestSchema = yup.object().shape({
     wallet_address: yup.string().trim().required("wallet_address is required"),
 });
 
