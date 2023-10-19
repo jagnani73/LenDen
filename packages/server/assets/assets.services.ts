@@ -31,8 +31,8 @@ export const transferNFT = async (
 };
 
 export const transferToken = async (
-    amount: string,
     wallet: string,
+    amount: string,
     ticker: TICKER,
     mode: "collateral" | "repayment"
 ) => {

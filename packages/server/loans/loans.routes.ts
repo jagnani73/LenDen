@@ -55,9 +55,10 @@ const handleLoanAcceptance = async (
 ) => {
     try {
         const { id } = req.body as LoanAcceptanceRequest;
-        await acceptLoan(id);
+        const hash = await acceptLoan(id);
         res.json({
             success: true,
+            transaction_hash: hash,
         });
     } catch (err) {
         next(err);
