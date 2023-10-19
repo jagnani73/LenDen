@@ -66,7 +66,7 @@ export const evaluateLoanValue = async (input: LoanEvaluateRequest) => {
                     }
                 );
             if (!nftData) {
-                principal = 4.67936;
+                principal = Math.random() * 100;
             }
         }
     }
@@ -165,17 +165,19 @@ export const getLoansForUser = async (username: string) => {
             loan.principal = new_principal;
         }
         if (warning_intensity === 4) {
+            const new_status =
+                loan.type === INPUT_TYPE.NFT ? "bidding" : "allotted";
             const { error } = await SupabaseService.getSupabase()
                 .from("loans")
                 .update({
-                    status: "bidding",
+                    status: new_status,
                 })
                 .eq("id", loan.id);
             if (error) {
                 console.error(error);
                 throw error;
             }
-            loan.status = "bidding";
+            loan.status = new_status;
         }
         loans.push(loan);
     }
