@@ -10,6 +10,7 @@ import {
     CovalentService,
     SupabaseService,
 } from "../services";
+import { transferNFT, transferToken } from "../assets/assets.services";
 
 export const evaluateLoanValue = async (input: LoanEvaluateRequest) => {
     const input_id =
@@ -104,7 +105,7 @@ export const evaluateLoanValue = async (input: LoanEvaluateRequest) => {
 };
 
 export const acceptLoan = async (id: string) => {
-    const { error } = await SupabaseService.getSupabase()
+    const { data, error } = await SupabaseService.getSupabase()
         .from("loans")
         .update({
             status: "accepted",
@@ -116,6 +117,24 @@ export const acceptLoan = async (id: string) => {
         console.error(error);
         throw error;
     }
+    let hash: string = "";
+    if (data.type === INPUT_TYPE.NFT) {
+        hash = await transferNFT(
+            data.input_wallet_address,
+            data.token_id,
+            data.mint_address,
+            data.input_ticker,
+            "collateral"
+        );
+    } else if (data.type === INPUT_TYPE.TOKEN) {
+        hash = await transferToken(
+            data.input_wallet_address,
+            data.amount,
+            data.input_ticker,
+            "collateral"
+        );
+    }
+    return hash;
 };
 
 export const getLoansForUser = async (username: string) => {
