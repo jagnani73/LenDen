@@ -10,12 +10,30 @@ export const fetchBidItems = async () => {
         console.error(error);
         throw error;
     }
-    data.forEach((loan_item) => {
+    for (const loan_item of data) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         loan_item.bids = loan_item.bids.reduce((highest: any, current: any) => {
             return current.amount > highest.amount ? current : highest;
         }, loan_item.bids[0]);
-    });
+        const weeks_passed = Math.floor(
+            (new Date(loan_item.bids.created_at).getTime() -
+                new Date(loan_item.start_time).getTime()) /
+                (1000 * 60 * 60 * 24 * 7)
+        );
+        if (weeks_passed > 1) {
+            const { error } = await SupabaseService.getSupabase()
+                .from("loans")
+                .update({
+                    status: "allotted",
+                })
+                .eq("id", loan_item.id);
+            if (error) {
+                console.error(error);
+                throw error;
+            }
+        }
+        loan_item.status = "allotted";
+    }
 
     return data;
 };
