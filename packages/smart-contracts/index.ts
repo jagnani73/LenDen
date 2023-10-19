@@ -1,6 +1,7 @@
 import express, { type Express, type Request, type Response } from "express";
 import { config as DotenvConfig } from "dotenv";
-import ethNftRoutes from "./src/polygon/nft/nft.routes";
+import polygonNftRoutes from "./src/polygon/nft/nft.routes";
+import polygonTokenRoutes from "./src/polygon/token/token.routes";
 
 DotenvConfig();
 const app: Express = express();
@@ -14,7 +15,8 @@ app.get("/api/v1/healthcheck", (_req: Request, res: Response) => {
     });
 });
 
-app.use("/api/v1/eth/", ethNftRoutes);
+app.use("/api/v1/polygon/nft/", polygonNftRoutes);
+app.use("/api/v1/polygon/token/", polygonTokenRoutes);
 
 app.use("*", (_req: Request, res: Response) => {
     res.status(404).json({
