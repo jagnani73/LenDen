@@ -4,7 +4,7 @@ import 'package:unfold/services/wallet_connect_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await WalletConnectService.instance.initialize();
+  // await WalletConnectService.instance.initialize();
   runApp(const MyApp());
 }
 

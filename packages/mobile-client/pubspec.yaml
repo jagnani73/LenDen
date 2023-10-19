@@ -40,6 +40,8 @@ dependencies:
   easy_widgets: ^0.0.7
   web3modal_flutter: ^3.0.0-beta04
   collection: ^1.17.2
+  smooth_page_indicator: ^1.1.0
+  fl_toast: ^3.2.0
 
 dev_dependencies:
   flutter_test:
