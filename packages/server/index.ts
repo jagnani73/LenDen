@@ -1,5 +1,8 @@
 import express, { type Express, type Request, type Response } from "express";
 import { config as DotenvConfig } from "dotenv";
+import { SupabaseService } from "./services";
+import { usersRouter } from "./users/users.routes";
+import { type PostgrestError } from "@supabase/supabase-js";
 
 DotenvConfig();
 const app: Express = express();
@@ -12,6 +15,7 @@ app.get("/api/v1/healthcheck", (_req: Request, res: Response) => {
         uptime: process.uptime(),
     });
 });
+app.use("/api/v1/users", usersRouter);
 app.use("*", (_req: Request, res: Response) => {
     res.status(404).json({
         success: false,
@@ -19,26 +23,19 @@ app.use("*", (_req: Request, res: Response) => {
     });
 });
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-app.use((err: Error | any, _req: Request, res: Response) => {
-    if (err?.errorCode) {
+app.use((err: Error | PostgrestError, _req: Request, res: Response) => {
+    if (err) {
         console.error("Server Error");
-        console.error(err);
-        res.status(err.errorCode).json({
-            success: false,
-            message: `${err.name}: ${err.message}`,
-        });
-    } else {
-        console.error("Unknown Error");
         console.error(new Date().toISOString());
         console.error(err);
         res.status(500).json({
             success: false,
-            message: "Internal Server Error",
+            message: err,
         });
     }
 });
 
-Promise.all([])
+Promise.all([SupabaseService.initSupabase()])
     .then(() => {
         const port: number = 8080;
         app.listen(port, () => {
