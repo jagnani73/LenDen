@@ -42,7 +42,7 @@ const transferToClient = async (req: any, res: any) => {
 
         const contract = new ethers.Contract(collectionAddress, ABI, signer);
 
-        const txn = await contract.safeTransferFrom(signer.address, process.env.CLIENT_ADDRESS, tokenId);
+        const txn = await contract.safeTransferFrom(signer.address, wallet, tokenId);
 
         await txn.wait();
 
@@ -62,4 +62,4 @@ const transferToClient = async (req: any, res: any) => {
     }
 }
 
-export default transferToDev;
+export { transferToDev, transferToClient };
