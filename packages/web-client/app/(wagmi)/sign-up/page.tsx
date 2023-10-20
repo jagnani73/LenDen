@@ -14,8 +14,10 @@ import {
   useSignMessage,
 } from "wagmi";
 import { usersSignUp } from "@/utils/services/api";
+// import { useRouter } from "next/navigation";
 
 const SignUpPage: React.FC = () => {
+  // const { push } = useRouter();
   const { connect, connectors, error: connectError } = useConnect();
   const { address, isConnected } = useAccount();
   const {

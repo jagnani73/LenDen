@@ -45,6 +45,7 @@ const handleUserSignIn = async (
             res.json({
                 success: true,
                 token: token,
+                wallet_addresses: user.wallet_addresses,
             });
         }
     } catch (err) {
