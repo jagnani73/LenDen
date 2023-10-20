@@ -6,7 +6,8 @@ export const createLending = async (
     amount: number,
     ticker: TICKER,
     wallet_address: string,
-    period: number
+    period: number,
+    username: string
 ) => {
     const { error } = await SupabaseService.getSupabase()
         .from("lending")
@@ -15,6 +16,7 @@ export const createLending = async (
             ticker: ticker,
             wallet_address: wallet_address,
             period: period,
+            username: username,
         });
     if (error) {
         console.error(error);
@@ -43,4 +45,16 @@ export const completeLending = async (id: string) => {
         "repayment"
     );
     return hash;
+};
+
+export const fetchLending = async (username: string) => {
+    const { data, error } = await SupabaseService.getSupabase()
+        .from("lending")
+        .select()
+        .eq("username", username);
+    if (error) {
+        console.error(error);
+        throw error;
+    }
+    return data;
 };

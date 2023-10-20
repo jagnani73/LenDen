@@ -1,3 +1,4 @@
+import { response } from "express";
 import { TICKER } from "../constants/services.constants";
 import { Evaluation, Loan } from "../types/services.types";
 
@@ -123,7 +124,8 @@ export const createLending = async (
   wallet_address: string,
   ticker: TICKER,
   amount: number,
-  period: number
+  period: number,
+  username: string
 ) => {
   try {
     await fetch(`${baseUrl}/lending/create`, {
@@ -136,9 +138,29 @@ export const createLending = async (
         ticker: ticker,
         amount: amount,
         period: period,
+        username: username,
       }),
     });
     return;
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+};
+
+export const fetchLends = async (username: string) => {
+  try {
+    const response = await fetch(`${baseUrl}/lending/`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: username,
+      }),
+    });
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error(error);
     return;
