@@ -1,3 +1,4 @@
+import { sendNotification } from "../notifications/notifications.services";
 import { SupabaseService } from "../services";
 
 export const fetchBidItem = async (id: string) => {
@@ -29,7 +30,10 @@ export const createBid = async (
         console.error(error);
         throw error;
     }
-
+    sendNotification(
+        "Bid Created",
+        `A bid has been created for the Loan ID ${loan_id}.`
+    );
     return data;
 };
 
@@ -63,6 +67,10 @@ export const fetchBids = async (loan_id: string) => {
             throw error;
         }
         data[0].status = new_status;
+        sendNotification(
+            "Item Allotted",
+            `The item with the Loan ID ${loan_id} has been allotted.`
+        );
     }
     return data;
 };

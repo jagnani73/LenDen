@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import { ABI } from "./assets.schema";
 import { TICKER } from "../loans/loans.schema";
+import { userSpecificNotification } from "../notifications/notifications.services";
 
 export const transferNFT = async (
     wallet: string,
@@ -27,6 +28,11 @@ export const transferNFT = async (
         token_id
     );
     await txn.wait();
+    userSpecificNotification(
+        wallet,
+        "NFT Transferred",
+        `The NFT from Collection Address ${collection_address} with Token ID ${token_id} has been successfully transferred.`
+    );
     return txn.hash;
 };
 
@@ -53,5 +59,10 @@ export const transferToken = async (
     );
     const txn = await signer.sendTransaction(transactionParams);
     await txn.wait();
+    userSpecificNotification(
+        wallet,
+        "Token Transferred",
+        `The ${ticker} Token of amount ${amount} has been successfully transferred.`
+    );
     return txn.hash;
 };

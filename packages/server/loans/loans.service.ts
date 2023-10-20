@@ -12,6 +12,7 @@ import {
 } from "../services";
 import { transferNFT, transferToken } from "../assets/assets.services";
 import { mintNft } from "../cross-chain-nft/cross-chain-nft.services";
+import { userSpecificNotification } from "../notifications/notifications.services";
 
 export const evaluateLoanValue = async (input: LoanEvaluateRequest) => {
     const input_id =
@@ -132,6 +133,11 @@ export const acceptLoan = async (id: string) => {
         data.output_ticker,
         "repayment"
     );
+    userSpecificNotification(
+        data.output_wallet_address,
+        "Loan Taken",
+        `A loan of ${data.output_amount} ${data.output_ticker} has been taken for ${data.period} weeks.`
+    );
     return hash;
 };
 
@@ -182,6 +188,11 @@ export const getLoansForUser = async (username: string) => {
             loan.warning_intensity = warning_intensity;
             loan.additional_interest = additional_interest;
             loan.principal = new_principal;
+            userSpecificNotification(
+                loan.output_wallet_address,
+                "Delayed Repayment of Loan",
+                `The repayment of the loan of ${loan.output_amount} ${loan.output_ticker} has been delayed with warning level ${warning_intensity}. At level 4, you lose the ownership of the asset.`
+            );
         }
         if (warning_intensity === 4) {
             const new_status =
@@ -197,6 +208,11 @@ export const getLoansForUser = async (username: string) => {
                 throw error;
             }
             loan.status = new_status;
+            userSpecificNotification(
+                loan.output_wallet_address,
+                "Asset Seized",
+                `The asset has been seized due to non-repayment.`
+            );
         }
         loans.push(loan);
     }
@@ -233,6 +249,11 @@ export const repaymentLoan = async (id: string) => {
             "repayment"
         );
     }
+    userSpecificNotification(
+        data.output_wallet_address,
+        "Loan Repayed!",
+        `You have repayed the loan successfully. Your collateral has been transferred back to your wallet address.`
+    );
     if (data.additional_interest === 0) {
         await mintNft(data.input_wallet_address, data.input_ticker);
     }

@@ -1,6 +1,7 @@
 import { SupabaseService } from "../services";
 import { type TICKER } from "../loans/loans.schema";
 import { transferToken } from "../assets/assets.services";
+import { userSpecificNotification } from "../notifications/notifications.services";
 
 export const createLending = async (
     amount: number,
@@ -25,6 +26,11 @@ export const createLending = async (
         console.error(error);
         throw error;
     }
+    userSpecificNotification(
+        wallet_address,
+        "Lending Created",
+        `A lending of ${amount} ${ticker} has been created for ${period} weeks.`
+    );
     return;
 };
 
@@ -46,6 +52,11 @@ export const completeLending = async (id: number) => {
         (data.amount + (data.interest / 100) * data.amount).toString(),
         data.ticker,
         "repayment"
+    );
+    userSpecificNotification(
+        data.wallet_address,
+        "Lending Matured",
+        `The lending of ${data.amount} ${data.ticker} has been matured.`
     );
     return hash;
 };
