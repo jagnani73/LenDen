@@ -1,8 +1,9 @@
 "use client";
 
-import { LOAN_TYPE } from "@/utils/constants/services.constants";
+import { LOAN_TYPE, TICKER } from "@/utils/constants/services.constants";
 import {
   acceptLoan,
+  repayLoan,
   evaluateLoan,
   fetchLoansForUsername,
 } from "@/utils/services/api";
@@ -14,10 +15,11 @@ import { CustomFieldTypes, FieldClassnames } from "@/utils/types/shared.types";
 import { Form, Formik } from "formik";
 import { CustomField } from "@/components/shared";
 import { CreateYupSchema } from "@/utils/functions";
-import { useConnect, useSendTransaction } from "wagmi";
+import { useConnect } from "wagmi";
 import * as Yup from "yup";
 import { parseEther } from "ethers";
 import { SendTransaction } from "@/components/wagmi";
+import { ContractWrite } from "@/components/wagmi";
 
 const LoansPage: React.FC = () => {
   const { user } = useUser();
@@ -26,7 +28,11 @@ const LoansPage: React.FC = () => {
   const { connect, connectors, error: connectError } = useConnect();
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [sendTx, setSendTx] = useState<boolean>(false);
+  const [sendTx, setSendTx] = useState<bigint | null>(null);
+  const [nftTx, setNftTx] = useState<{
+    address: string;
+    token_id: string;
+  } | null>(null);
   const [loans, setLoans] = useState<Loan[] | null>(null);
   const [onForm, setOnForm] = useState<"nft" | "token" | null>(null);
 
@@ -42,6 +48,12 @@ const LoansPage: React.FC = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
+
+  useEffect(() => {
+    if (!onForm) {
+      setEvaluation(null);
+    }
+  }, [onForm]);
 
   const CLASSNAMES = useMemo<FieldClassnames>(
     () => ({
@@ -215,19 +227,53 @@ const LoansPage: React.FC = () => {
   );
 
   const acceptLoanHandler = useCallback(
-    async (id: string, evaluation: Evaluation) => {
-      console.log(id);
+    async (
+      id: string,
+      output_ticker: TICKER,
+      data: { input_amount?: number; mint_address?: string; token_id?: string }
+    ) => {
       try {
         setLoading(true);
         const output_chain = connectors[0].chains.find(
-          (chain) => chain.nativeCurrency.symbol === evaluation!.output_ticker
+          (chain) => chain.nativeCurrency.symbol === output_ticker
         );
         connect({
           connector: connectors[0],
           chainId: output_chain?.id,
         });
-        setSendTx(true);
+        if (data.input_amount) {
+          setSendTx(parseEther(data.input_amount.toString()));
+        } else if (data.mint_address && data.token_id) {
+          setNftTx({
+            address: data.mint_address,
+            token_id: data.token_id,
+          });
+        }
         await acceptLoan(id);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+        setSendTx(null);
+        setOnForm(null);
+      }
+    },
+    [connectors]
+  );
+
+  const repayLoanHandler = useCallback(
+    async (id: string, output_ticker: TICKER, principal: number) => {
+      try {
+        setLoading(true);
+        const output_chain = connectors[0].chains.find(
+          (chain) => chain.nativeCurrency.symbol === output_ticker
+        );
+        connect({
+          connector: connectors[0],
+          chainId: output_chain?.id,
+        });
+        setSendTx(parseEther(principal.toString()));
+        await repayLoan(id);
         push("/loans");
       } catch (error) {
         console.error(error);
@@ -235,7 +281,7 @@ const LoansPage: React.FC = () => {
         setLoading(false);
       }
     },
-    [evaluation, connectors]
+    [connectors]
   );
 
   return (
@@ -265,32 +311,51 @@ const LoansPage: React.FC = () => {
         <p>loading</p>
       ) : !onForm ? (
         <div className="flex gap-8 flex-wrap">
-          {loans.map((loan) => (
-            <article
-              key={loan.id}
-              className="mx-auto border rounded-md border-neutral-600 p-4 h-full"
-            >
-              <p>Type: {loan.type}</p>
-              <p>Start Time: {loan.start_time}</p>
-              <p>
-                Tenure: {loan.period} {loan.period_unit}
-              </p>
-              {loan.type !== LOAN_TYPE.NFT && (
+          {!loans.length ? (
+            <p>no loans found</p>
+          ) : (
+            loans.map((loan) => (
+              <article
+                key={loan.id}
+                className="mx-auto border rounded-md border-neutral-600 p-4 h-full"
+              >
+                <p>Type: {loan.type}</p>
+                <p>Start Time: {loan.start_time}</p>
                 <p>
-                  Input: {loan.input_amount} {loan.input_ticker}
+                  Tenure: {loan.period} {loan.period_unit}
                 </p>
-              )}
-              <p>
-                Output Amount: {loan.output_amount} {loan.output_ticker}
-              </p>
-              <p>Interest : {loan.interest}%</p>
-              <p>
-                To Pay: {loan.principal} {loan.output_ticker}
-              </p>
-              <p>Status: {loan.status}</p>
-              <p>Warning Number: {loan.warning_intensity}</p>
-            </article>
-          ))}
+                {loan.type !== LOAN_TYPE.NFT && (
+                  <p>
+                    Input: {loan.input_amount} {loan.input_ticker}
+                  </p>
+                )}
+                <p>
+                  Output Amount: {loan.output_amount} {loan.output_ticker}
+                </p>
+                <p>Interest : {loan.interest}%</p>
+                <p>
+                  To Pay: {loan.principal} {loan.output_ticker}
+                </p>
+                <p>Status: {loan.status}</p>
+                <p>Warning Number: {loan.warning_intensity}</p>
+
+                {loan.status === "accepted" && (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      repayLoanHandler(
+                        loan.id,
+                        loan.output_ticker,
+                        loan.principal
+                      )
+                    }
+                  >
+                    Repay Loan
+                  </button>
+                )}
+              </article>
+            ))
+          )}
         </div>
       ) : (
         <div className="flex flex-col gap-x-4 justify-center items-center">
@@ -348,7 +413,12 @@ const LoansPage: React.FC = () => {
                     (!evaluation && Object.keys(errors).length > 0) || loading
                   }
                   onClick={() =>
-                    evaluation && acceptLoanHandler(evaluation.id, evaluation)
+                    evaluation &&
+                    acceptLoanHandler(evaluation.id, evaluation.output_ticker, {
+                      input_amount: evaluation.input_amount,
+                      mint_address: evaluation.mint_address,
+                      token_id: evaluation.token_id,
+                    })
                   }
                 >
                   {loading
@@ -362,12 +432,21 @@ const LoansPage: React.FC = () => {
           </Formik>
         </div>
       )}
-      {sendTx && (
+
+      {sendTx ? (
         <SendTransaction
           to="0xeC2265da865A947647CE6175a4a2646318f6DCEb"
-          value={parseEther(evaluation!.input_amount.toString())}
+          value={sendTx}
         />
-      )}
+      ) : null}
+
+      {nftTx?.address ? (
+        <ContractWrite
+          address={nftTx.address}
+          token_id={+nftTx.token_id}
+          walletAddress={user!.wallet_addresses["AVAX"].wallet_address}
+        />
+      ) : null}
     </main>
   );
 };

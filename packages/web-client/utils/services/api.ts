@@ -99,3 +99,21 @@ export const acceptLoan = async (id: string) => {
     return;
   }
 };
+
+export const repayLoan = async (id: string) => {
+  try {
+    await fetch(`${baseUrl}/loans/repayment`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: id,
+      }),
+    });
+    return;
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+};
