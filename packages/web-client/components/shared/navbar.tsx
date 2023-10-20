@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 
 const Navbar: React.FC = () => {
   const asPath = usePathname();
-  console.log(asPath);
+
   const NAVIGATION = useMemo<{
     prompt?: string;
     routes: { href: string; content: string }[];
@@ -28,20 +28,22 @@ const Navbar: React.FC = () => {
           ],
         };
       }
-      case "/employee/jobs": {
+      case "/sign-up": {
         return {
           routes: [
             {
-              content: "Applications",
-              href: "/employee/applications",
+              content: "Sign In",
+              href: "/sign-in",
             },
+          ],
+        };
+      }
+      case "/sign-in": {
+        return {
+          routes: [
             {
-              content: "Profile",
-              href: "/employee/profile",
-            },
-            {
-              content: "Logout",
-              href: "/",
+              content: "Sign Up",
+              href: "/sign-up",
             },
           ],
         };
@@ -55,10 +57,10 @@ const Navbar: React.FC = () => {
   }, [asPath]);
 
   return (
-    <nav className="h-32 w-full px-20 flex items-center justify-between bg-white border-b border-french-grey">
+    <nav className="h-24 w-full px-20 flex items-center justify-between bg-white border-b border-french-grey">
       <Link href="/" className="flex items-center gap-x-8" title="LenDen">
-        <Image src="/site/logo.svg" alt="LenDen logo" width={96} height={96} />
-        <h1 className="text-5xl font-semibold">LenDen</h1>
+        <Image src="/site/logo.svg" alt="LenDen logo" width={88} height={88} />
+        <h1 className="text-4xl font-semibold">LenDen</h1>
       </Link>
 
       <div className="flex items-center justify-center gap-x-8">

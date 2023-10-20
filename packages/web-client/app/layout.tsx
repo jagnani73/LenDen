@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Navbar } from "@/components/shared";
+import { Footer, Navbar } from "@/components/shared";
 import { Syne } from "next/font/google";
 
 const syne = Syne({
@@ -24,6 +24,7 @@ export default function RootLayout({
       <body className={syne.className}>
         <Navbar />
         {children}
+        <Footer />
       </body>
     </html>
   );

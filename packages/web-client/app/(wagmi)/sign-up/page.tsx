@@ -14,16 +14,13 @@ import {
   useSignMessage,
 } from "wagmi";
 import { usersSignUp } from "@/utils/services/api";
-// import { useRouter } from "next/navigation";
 
 const SignUpPage: React.FC = () => {
-  // const { push } = useRouter();
-  const { connect, connectors, error: connectError } = useConnect();
+  const { connect, connectors } = useConnect();
   const { address, isConnected } = useAccount();
   const {
     signMessage,
     data: signature,
-    error: signError,
     isSuccess: messageSigned,
   } = useSignMessage();
   const { disconnect } = useDisconnect();
@@ -65,9 +62,10 @@ const SignUpPage: React.FC = () => {
 
   const CLASSNAMES = useMemo<FieldClassnames>(
     () => ({
-      wrapper: "w-full",
-      input: "border border-neutral-900 rounded-md px-4 py-4 w-full",
-      description: "text-red-600 text-sm font-medium my-0.5 pl-1",
+      wrapper: "w-full bg-transparent mt-2",
+      input:
+        "border-b border-green-yellow text-sm bg-transparent px-1 py-2 w-full outline-none",
+      description: "text-red-700 text-xs font-medium my-0.5 pl-1",
     }),
     []
   );
@@ -125,7 +123,7 @@ const SignUpPage: React.FC = () => {
           )}
         >
           {({ errors, touched }) => (
-            <Form className="w-96 border border-neutral-600 rounded-md p-6">
+            <Form className="w-96 border-2 border-green-yellow bg-ghost-white p-6">
               <h1 className="text-5xl mb-4 text-center">GM Ser!</h1>
 
               <p className="text-center text-opacity-75 mb-4">
@@ -149,14 +147,14 @@ const SignUpPage: React.FC = () => {
               </div>
 
               <div className="my-8">
-                <p className="text-sm mb-2 text-center">
+                <p className="text-sm mb-2 pt-4 text-center">
                   We need you to connect a wallet to these chains
                 </p>
 
                 {connectors.map((connector) => (
                   <article
                     key={connector.name}
-                    className="flex items-center justify-center gap-x-6"
+                    className="flex items-center justify-center gap-x-10"
                   >
                     {connector.chains.map((chain) => {
                       const chainAdded: boolean = Object.keys(
@@ -167,7 +165,7 @@ const SignUpPage: React.FC = () => {
                         <button
                           type="button"
                           key={chain.name}
-                          className={`border rounded border-neutral-600 px-4 py-2 ${
+                          className={`border bg-green-yellow bg-opacity-50 text-sm px-4 py-2 ${
                             chainAdded ? "opacity-50" : ""
                           }`}
                           disabled={chainAdded}
@@ -189,7 +187,7 @@ const SignUpPage: React.FC = () => {
 
               <button
                 type="submit"
-                className="border bg-neutral-900 text-white rounded-md px-4 py-4 w-full"
+                className="bg-green-yellow text-black text-xl font-medium px-4 py-4 w-full"
                 disabled={
                   Object.keys(errors).length > 0 ||
                   Object.keys(connectedChains).length < 2

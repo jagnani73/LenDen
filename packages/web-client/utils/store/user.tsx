@@ -8,6 +8,7 @@ import {
   useState,
   useEffect,
 } from "react";
+import { usePathname } from "next/navigation";
 
 interface UserContextType {
   user: {
@@ -42,6 +43,7 @@ const UserContext = createContext<UserContextType>({} as UserContextType);
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const { replace } = useRouter();
+  const path = usePathname();
 
   const [user, setUser] = useState<{
     authToken: string;
@@ -55,8 +57,8 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   } | null>(null);
 
   useEffect(() => {
-    if (!user) {
-      replace("/sign-in");
+    if (!user && path !== "sign-in") {
+      replace("/sign-up");
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

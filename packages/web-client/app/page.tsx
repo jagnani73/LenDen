@@ -10,7 +10,7 @@ const HomePage: React.FC = () => {
   return (
     <section>
       <h2
-        className={`text-9xl ${pixelifySanse.className} font-bold text-center mt-20`}
+        className={`text-9xl ${pixelifySanse.className} font-bold text-center`}
       >
         Cross Chain
       </h2>
