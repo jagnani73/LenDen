@@ -1,7 +1,7 @@
 import * as Yup from "yup";
 import { CustomFieldTypes } from "../types/shared.types";
 
-const CreateYupSchema = (schema: any, config: CustomFieldTypes) => {
+export const CreateYupSchema = (schema: any, config: CustomFieldTypes) => {
   if (config) {
     const { name, validationtype: validationType, validations = [] } = config;
     if (!Yup[validationType as keyof typeof Yup]) return schema;
@@ -16,5 +16,3 @@ const CreateYupSchema = (schema: any, config: CustomFieldTypes) => {
     return schema;
   }
 };
-
-export default CreateYupSchema;
