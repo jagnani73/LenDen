@@ -11,6 +11,7 @@ import {
     SupabaseService,
 } from "../services";
 import { transferNFT, transferToken } from "../assets/assets.services";
+import { mintNft } from "../cross-chain-nft/cross-chain-nft.services";
 
 export const evaluateLoanValue = async (input: LoanEvaluateRequest) => {
     const input_id =
@@ -229,6 +230,9 @@ export const repaymentLoan = async (id: string) => {
             data.input_ticker,
             "repayment"
         );
+    }
+    if (data.additional_interest === 0) {
+        await mintNft(data.input_wallet_address, data.input_ticker);
     }
 
     return hash;

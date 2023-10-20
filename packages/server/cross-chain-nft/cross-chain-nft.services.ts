@@ -4,16 +4,17 @@ import {
     scoreNftAddressAvax,
     scoreNftAddressPolygon,
 } from "./cross-chain-nft.schema";
+import { TICKER } from "../loans/loans.schema";
 
 export const mintNft = async (wallet_address: string, chain: string) => {
     const provider = new ethers.providers.JsonRpcProvider(
-        chain === "polygon"
+        chain === TICKER.MATIC
             ? process.env.RPC_ENDPOINT_POLYGON
             : process.env.RPC_ENDPOINT_AVAX
     );
     const signer = new ethers.Wallet(process.env.DEV_PK!, provider);
     const contract = new ethers.Contract(
-        chain === "polygon" ? scoreNftAddressPolygon : scoreNftAddressAvax,
+        chain === TICKER.MATIC ? scoreNftAddressPolygon : scoreNftAddressAvax,
         ABI,
         signer
     );
@@ -22,5 +23,3 @@ export const mintNft = async (wallet_address: string, chain: string) => {
     await txn.wait();
     return txn.hash;
 };
-
-

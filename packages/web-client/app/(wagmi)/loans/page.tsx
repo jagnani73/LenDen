@@ -15,7 +15,7 @@ import { CustomFieldTypes, FieldClassnames } from "@/utils/types/shared.types";
 import { Form, Formik } from "formik";
 import { CustomField } from "@/components/shared";
 import { CreateYupSchema } from "@/utils/functions";
-import { useConnect } from "wagmi";
+import { useConnect, useSwitchNetwork } from "wagmi";
 import * as Yup from "yup";
 import { parseEther } from "ethers";
 import { SendTransaction } from "@/components/wagmi";
@@ -26,6 +26,8 @@ const LoansPage: React.FC = () => {
   const { push, replace } = useRouter();
   const [evaluation, setEvaluation] = useState<Evaluation | null>(null);
   const { connect, connectors, error: connectError } = useConnect();
+  const { chains, error, isLoading, pendingChainId, switchNetwork } =
+    useSwitchNetwork();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [sendTx, setSendTx] = useState<bigint | null>(null);
@@ -237,10 +239,13 @@ const LoansPage: React.FC = () => {
         const output_chain = connectors[0].chains.find(
           (chain) => chain.nativeCurrency.symbol === output_ticker
         );
+        switchNetwork?.(output_chain?.id);
+
         connect({
           connector: connectors[0],
           chainId: output_chain?.id,
         });
+
         if (data.input_amount) {
           setSendTx(parseEther(data.input_amount.toString()));
         } else if (data.mint_address && data.token_id) {
@@ -268,6 +273,7 @@ const LoansPage: React.FC = () => {
         const output_chain = connectors[0].chains.find(
           (chain) => chain.nativeCurrency.symbol === output_ticker
         );
+        switchNetwork?.(output_chain?.id);
         connect({
           connector: connectors[0],
           chainId: output_chain?.id,
