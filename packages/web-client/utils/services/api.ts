@@ -237,3 +237,46 @@ export const addBid = async (
     return;
   }
 };
+
+export const sendNotification = async (title: string, description: string) => {
+  try {
+    await fetch(`${baseURL}/notifications/send`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: title,
+        description: description,
+      }),
+    });
+    return;
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+};
+
+export const sendUserSpecificNotification = async (
+  wallet_address: string,
+  title: string,
+  description: string
+) => {
+  try {
+    await fetch(`${baseURL}/notifications/send/user`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        wallet_address: wallet_address,
+        title: title,
+        description: description,
+      }),
+    });
+    return;
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+};
