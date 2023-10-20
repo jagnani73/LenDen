@@ -1,13 +1,66 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { CustomFieldTypes, FieldClassnames } from "@/utils/types/shared.types";
 import { Form, Formik } from "formik";
 import { CreateYupSchema } from "@/utils/functions";
 import * as Yup from "yup";
 import { CustomField } from "@/components/shared";
+import {
+  Chain,
+  useAccount,
+  useConnect,
+  useDisconnect,
+  useSignMessage,
+} from "wagmi";
+import { usersSignUp } from "@/utils/services/api";
 
 const SignUpPage: React.FC = () => {
+  const { connect, connectors, error: connectError } = useConnect();
+  const { address, isConnected } = useAccount();
+  const {
+    signMessage,
+    data: signature,
+    error: signError,
+    isSuccess: messageSigned,
+  } = useSignMessage();
+  const { disconnect } = useDisconnect();
+
+  const [connectingChain, setConnectingChain] = useState<Chain | null>(null);
+  const [connectedChains, setConnectedChains] = useState<{
+    [ticker: string]: {
+      wallet_address: string;
+      signature: string;
+    };
+  }>({});
+
+  useEffect(() => {
+    disconnect();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (isConnected && connectingChain) {
+      signMessage({
+        message: `I am connecting my wallet to ${connectingChain.name}`,
+      });
+    }
+  }, [connectingChain, isConnected, signMessage]);
+
+  useEffect(() => {
+    if (signature && connectingChain && address && messageSigned) {
+      setConnectedChains((prevState) => ({
+        ...prevState,
+        [connectingChain.nativeCurrency.symbol]: {
+          signature: signature,
+          wallet_address: address,
+        },
+      }));
+      disconnect();
+    }
+  }, [address, connectingChain, disconnect, messageSigned, signature]);
+
   const CLASSNAMES = useMemo<FieldClassnames>(
     () => ({
       wrapper: "w-full",
@@ -51,7 +104,12 @@ const SignUpPage: React.FC = () => {
     [CLASSNAMES]
   );
 
-  const submitHandler = useCallback(() => {}, []);
+  const submitHandler = useCallback(
+    async (values: { username: string; password: string }) => {
+      await usersSignUp(values.username, values.password, connectedChains);
+    },
+    [connectedChains]
+  );
 
   return (
     <main className="flex items-center justify-center w-full">
@@ -59,7 +117,7 @@ const SignUpPage: React.FC = () => {
         <Formik
           enableReinitialize
           onSubmit={submitHandler}
-          initialValues={{ admin_email: "", admin_password: "" }}
+          initialValues={{ username: "", password: "" }}
           validationSchema={Yup.object().shape(
             FIELDS.reduce(CreateYupSchema, {})
           )}
@@ -88,9 +146,52 @@ const SignUpPage: React.FC = () => {
                 ))}
               </div>
 
+              <div className="my-8">
+                <p className="text-sm mb-2 text-center">
+                  We need you to connect a wallet to these chains
+                </p>
+
+                {connectors.map((connector) => (
+                  <article
+                    key={connector.name}
+                    className="flex items-center justify-center gap-x-6"
+                  >
+                    {connector.chains.map((chain) => {
+                      const chainAdded: boolean = Object.keys(
+                        connectedChains
+                      ).includes(chain.nativeCurrency.symbol);
+
+                      return (
+                        <button
+                          type="button"
+                          key={chain.name}
+                          className={`border rounded border-neutral-600 px-4 py-2 ${
+                            chainAdded ? "opacity-50" : ""
+                          }`}
+                          disabled={chainAdded}
+                          onClick={() => {
+                            setConnectingChain(chain);
+                            connect({
+                              connector: connector,
+                              chainId: chain.id,
+                            });
+                          }}
+                        >
+                          {chain.name}
+                        </button>
+                      );
+                    })}
+                  </article>
+                ))}
+              </div>
+
               <button
                 type="submit"
-                className="border bg-neutral-900 text-white rounded-md px-4 py-4 w-full mt-6"
+                className="border bg-neutral-900 text-white rounded-md px-4 py-4 w-full"
+                disabled={
+                  Object.keys(errors).length > 0 ||
+                  Object.keys(connectedChains).length < 2
+                }
               >
                 Login
               </button>

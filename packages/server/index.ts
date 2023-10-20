@@ -10,11 +10,13 @@ import { type PostgrestError } from "@supabase/supabase-js";
 import { loansRouter } from "./loans/loans.routes";
 import { bidsRouter } from "./bids/bids.routes";
 import { assetsRouter } from "./assets/assets.routes";
-import crossChainNFTRouter from "./cross-chain-nft/cross-chain-nft.routes";
+import { crossChainNFTRouter } from "./cross-chain-nft/cross-chain-nft.routes";
 import { notificationRouter } from "./notifications/notifications.routes";
+import cors from "cors";
 
 DotenvConfig();
 const app: Express = express();
+app.use(cors());
 app.use(express.json());
 
 app.get("/api/v1/healthcheck", (_req: Request, res: Response) => {
