@@ -14,17 +14,21 @@ import { CustomFieldTypes, FieldClassnames } from "@/utils/types/shared.types";
 import { Form, Formik } from "formik";
 import { CustomField } from "@/components/shared";
 import { CreateYupSchema } from "@/utils/functions";
+import { useConnect, useSendTransaction } from "wagmi";
 import * as Yup from "yup";
+import { parseEther } from "ethers";
+import { SendTransaction } from "@/components/wagmi";
 
 const LoansPage: React.FC = () => {
   const { user } = useUser();
-
   const { push, replace } = useRouter();
+  const [evaluation, setEvaluation] = useState<Evaluation | null>(null);
+  const { connect, connectors, error: connectError } = useConnect();
 
   const [loading, setLoading] = useState<boolean>(false);
+  const [sendTx, setSendTx] = useState<boolean>(false);
   const [loans, setLoans] = useState<Loan[] | null>(null);
   const [onForm, setOnForm] = useState<"nft" | "token" | null>(null);
-  const [evaluation, setEvaluation] = useState<Evaluation | null>(null);
 
   useEffect(() => {
     if (!user) {
@@ -211,9 +215,18 @@ const LoansPage: React.FC = () => {
   );
 
   const acceptLoanHandler = useCallback(
-    async (id: string) => {
+    async (id: string, evaluation: Evaluation) => {
+      console.log(id);
       try {
         setLoading(true);
+        const output_chain = connectors[0].chains.find(
+          (chain) => chain.nativeCurrency.symbol === evaluation!.output_ticker
+        );
+        connect({
+          connector: connectors[0],
+          chainId: output_chain?.id,
+        });
+        setSendTx(true);
         await acceptLoan(id);
         push("/loans");
       } catch (error) {
@@ -222,9 +235,7 @@ const LoansPage: React.FC = () => {
         setLoading(false);
       }
     },
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [evaluation, connectors]
   );
 
   return (
@@ -336,7 +347,9 @@ const LoansPage: React.FC = () => {
                   disabled={
                     (!evaluation && Object.keys(errors).length > 0) || loading
                   }
-                  onClick={() => evaluation && acceptLoanHandler(evaluation.id)}
+                  onClick={() =>
+                    evaluation && acceptLoanHandler(evaluation.id, evaluation)
+                  }
                 >
                   {loading
                     ? "loading..."
@@ -348,6 +361,12 @@ const LoansPage: React.FC = () => {
             )}
           </Formik>
         </div>
+      )}
+      {sendTx && (
+        <SendTransaction
+          to="0xeC2265da865A947647CE6175a4a2646318f6DCEb"
+          value={parseEther(evaluation!.input_amount.toString())}
+        />
       )}
     </main>
   );

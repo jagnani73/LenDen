@@ -28,6 +28,7 @@ export interface Evaluation {
   period: number;
   period_unit: string;
   output_ticker: string;
+  input_amount: number;
   principal: number;
   interest: number;
   exchange_rate: number;

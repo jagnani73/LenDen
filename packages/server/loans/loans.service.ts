@@ -105,6 +105,7 @@ export const evaluateLoanValue = async (input: LoanEvaluateRequest) => {
         id: data.id,
         principal: principal,
         interest: interest,
+        input_amount: input.input_amount,
         output_amount: output_amount,
         exchange_rate: exchange_rate,
     };
@@ -125,24 +126,17 @@ export const acceptLoan = async (id: string) => {
     }
     let hash: string = "";
     if (data.type === LOAN_TYPE.NFT) {
-        hash = await transferNFT(
+        await transferNFT(
             data.input_wallet_address,
             data.mint_address,
             data.token_id,
             data.input_ticker,
             "collateral"
         );
-    } else if (data.type === LOAN_TYPE.TOKEN) {
-        hash = await transferToken(
-            data.input_wallet_address,
-            data.amount,
-            data.input_ticker,
-            "collateral"
-        );
     }
-    await transferToken(
+    hash = await transferToken(
         data.output_wallet_address,
-        data.output_amount,
+        data.output_amount.toString(),
         data.output_ticker,
         "repayment"
     );
