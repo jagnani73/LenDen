@@ -1,8 +1,7 @@
-import { response } from "express";
 import { TICKER } from "../constants/services.constants";
-import { Evaluation, Loan } from "../types/services.types";
+import { Evaluation, Lending, Loan } from "../types/services.types";
 
-const baseUrl: string = "http://localhost:8080/api/v1";
+const baseURL: string = "http://localhost:8080/api/v1";
 
 export const usersSignUp = async (
   username: string,
@@ -15,7 +14,7 @@ export const usersSignUp = async (
   }
 ) => {
   try {
-    await fetch(`${baseUrl}/users/sign-up`, {
+    await fetch(`${baseURL}/users/sign-up`, {
       method: "POST",
       body: JSON.stringify({
         username: username,
@@ -33,7 +32,7 @@ export const usersSignUp = async (
 
 export const usersSignIn = async (username: string, password: string) => {
   try {
-    const response = await fetch(`${baseUrl}/users/sign-in`, {
+    const response = await fetch(`${baseURL}/users/sign-in`, {
       method: "POST",
       body: JSON.stringify({
         username: username,
@@ -53,7 +52,7 @@ export const usersSignIn = async (username: string, password: string) => {
 
 export const fetchLoansForUsername = async (username: string) => {
   try {
-    const response = await fetch(`${baseUrl}/loans/${username}`, {
+    const response = await fetch(`${baseURL}/loans/${username}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -69,7 +68,7 @@ export const fetchLoansForUsername = async (username: string) => {
 
 export const evaluateLoan = async (loan: any) => {
   try {
-    const response = await fetch(`${baseUrl}/loans/evaluate`, {
+    const response = await fetch(`${baseURL}/loans/evaluate`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -86,7 +85,7 @@ export const evaluateLoan = async (loan: any) => {
 
 export const acceptLoan = async (id: string) => {
   try {
-    await fetch(`${baseUrl}/loans/accept`, {
+    await fetch(`${baseURL}/loans/accept`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -104,7 +103,7 @@ export const acceptLoan = async (id: string) => {
 
 export const repayLoan = async (id: string) => {
   try {
-    await fetch(`${baseUrl}/loans/repayment`, {
+    await fetch(`${baseURL}/loans/repayment`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -128,7 +127,7 @@ export const createLending = async (
   username: string
 ) => {
   try {
-    await fetch(`${baseUrl}/lending/create`, {
+    await fetch(`${baseURL}/lending/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -150,17 +149,33 @@ export const createLending = async (
 
 export const fetchLends = async (username: string) => {
   try {
-    const response = await fetch(`${baseUrl}/lending/`, {
+    const response = await fetch(`${baseURL}/lending/${username}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        username: username,
-      }),
     });
     const data = await response.json();
-    return data;
+    return data.lends as Lending[];
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+};
+
+export const completeLend = async (id: number) => {
+  try {
+    const response = await fetch(`${baseURL}/lending/complete`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: id,
+      }),
+    });
+    const hash = await response.json();
+    return hash as string;
   } catch (error) {
     console.error(error);
     return;

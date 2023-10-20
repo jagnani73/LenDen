@@ -61,7 +61,7 @@ const handleLending = async (
     next: NextFunction
 ) => {
     try {
-        const { username } = req.body as LendingRequest;
+        const { username } = req.params as LendingRequest;
         const lends = await fetchLending(username);
         res.json({
             success: true,
@@ -83,7 +83,7 @@ lendingRouter.post(
     handleCompleteLending
 );
 lendingRouter.get(
-    "/",
-    validateQuery("body", lendingRequestSchema),
+    "/:username",
+    validateQuery("params", lendingRequestSchema),
     handleLending
 );

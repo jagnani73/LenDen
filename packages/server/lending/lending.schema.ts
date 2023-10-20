@@ -24,7 +24,7 @@ export type CreateLendingRequest = yup.InferType<
 
 export const completeLendingRequestSchema = yup
     .object({
-        id: yup.string().trim().required("id is required"),
+        id: yup.number().required("id is required"),
     })
     .strict();
 
