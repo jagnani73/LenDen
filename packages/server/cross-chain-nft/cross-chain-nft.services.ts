@@ -6,7 +6,7 @@ import {
 } from "./cross-chain-nft.schema";
 
 export const mintNft = async (wallet_address: string, chain: string) => {
-    const provider = new ethers.JsonRpcProvider(
+    const provider = new ethers.providers.JsonRpcProvider(
         chain === "polygon"
             ? process.env.RPC_ENDPOINT_POLYGON
             : process.env.RPC_ENDPOINT_AVAX

@@ -11,6 +11,7 @@ import { loansRouter } from "./loans/loans.routes";
 import { bidsRouter } from "./bids/bids.routes";
 import { assetsRouter } from "./assets/assets.routes";
 import crossChainNFTRouter from "./cross-chain-nft/cross-chain-nft.routes";
+import { notificationRouter } from "./notifications/notifications.routes";
 
 DotenvConfig();
 const app: Express = express();
@@ -28,6 +29,7 @@ app.use("/api/v1/loans", loansRouter);
 app.use("/api/v1/bids", bidsRouter);
 app.use("/api/v1/assets", assetsRouter);
 app.use("/api/v1/cross-chain-nft", crossChainNFTRouter);
+app.use("/api/v1/notifications", notificationRouter);
 app.use("*", (_req: Request, res: Response) => {
     res.status(404).json({
         success: false,

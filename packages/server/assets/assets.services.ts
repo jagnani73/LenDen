@@ -10,7 +10,7 @@ export const transferNFT = async (
     mode: "collateral" | "repayment"
 ) => {
     const isPolygon = ticker === TICKER.MATIC;
-    const provider = new ethers.JsonRpcProvider(
+    const provider = new ethers.providers.JsonRpcProvider(
         isPolygon
             ? process.env.RPC_ENDPOINT_POLYGON
             : process.env.RPC_ENDPOINT_AVAX
@@ -36,7 +36,7 @@ export const transferToken = async (
     ticker: TICKER,
     mode: "collateral" | "repayment"
 ) => {
-    const provider = new ethers.JsonRpcProvider(
+    const provider = new ethers.providers.JsonRpcProvider(
         ticker === TICKER.MATIC
             ? process.env.RPC_ENDPOINT_POLYGON
             : process.env.RPC_ENDPOINT_AVAX
@@ -45,7 +45,7 @@ export const transferToken = async (
         from: mode === "collateral" ? wallet : process.env.DEV_ADDRESS,
         to: mode === "collateral" ? process.env.DEV_ADDRESS : wallet,
         data: "0x",
-        value: ethers.parseEther(amount),
+        value: ethers.utils.parseEther(amount),
     };
     const signer = new ethers.Wallet(
         mode === "collateral" ? wallet : process.env.DEV_PK!,
