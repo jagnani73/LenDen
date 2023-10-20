@@ -139,7 +139,9 @@ export const getLoansForUser = async (username: string) => {
     const { data, error } = await SupabaseService.getSupabase()
         .from("loans")
         .select()
-        .eq("username", username);
+        .eq("username", username)
+        .neq("status", "evaluated")
+        .order("start_time", { ascending: true });
     if (error) {
         console.error(error);
         throw error;

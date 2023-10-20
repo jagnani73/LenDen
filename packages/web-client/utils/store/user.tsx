@@ -1,6 +1,13 @@
 "use client";
 
-import { createContext, type ReactNode, useContext, useState } from "react";
+import { useRouter } from "next/navigation";
+import {
+  createContext,
+  type ReactNode,
+  useContext,
+  useState,
+  useEffect,
+} from "react";
 
 interface UserContextType {
   user: {
@@ -34,6 +41,8 @@ interface UserProviderProps {
 const UserContext = createContext<UserContextType>({} as UserContextType);
 
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
+  const { replace } = useRouter();
+
   const [user, setUser] = useState<{
     authToken: string;
     username: string;
@@ -59,6 +68,14 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       },
     },
   });
+
+  useEffect(() => {
+    if (!user) {
+      replace("/sign-in");
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   return (
     <UserContext.Provider

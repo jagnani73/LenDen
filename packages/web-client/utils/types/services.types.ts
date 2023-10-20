@@ -28,6 +28,7 @@ export interface Evaluation {
   period: number;
   period_unit: string;
   output_ticker: TICKER;
+  input_ticker: TICKER;
   input_amount: number;
   mint_address: string;
   token_id: string;

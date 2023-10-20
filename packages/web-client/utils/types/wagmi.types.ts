@@ -6,5 +6,5 @@ export interface SendTransactionProps {
 export interface ContractWrite {
   address: string;
   token_id: number;
-  walletAddress: string;
+  wallet_address: string;
 }
