@@ -31,12 +31,15 @@ const handleLoanEvaluation = async (
 ) => {
     try {
         const data = req.body as LoanEvaluateRequest;
-        const { id, interest, principal } = await evaluateLoanValue(data);
+        const { id, interest, principal, exchange_rate, output_amount } =
+            await evaluateLoanValue(data);
         res.json({
             success: true,
             evaluation: {
                 id: id,
                 interest: interest,
+                exchange_rate: exchange_rate,
+                output_amount: output_amount,
                 principal: principal,
                 output_ticker: data.output_ticker,
                 period: data.period,

@@ -20,7 +20,8 @@ export const evaluateLoanValue = async (input: LoanEvaluateRequest) => {
 
     let principal: number = 0,
         interest: number = 0,
-        exchange_rate: number = 1;
+        exchange_rate: number = 1,
+        output_amount: number | null = null;
 
     switch (input.period) {
         case 1: {
@@ -43,7 +44,7 @@ export const evaluateLoanValue = async (input: LoanEvaluateRequest) => {
                 "/v2/tools/price-conversion",
                 {
                     params: {
-                        amount: input.amount,
+                        amount: input.input_amount,
                         id: input_id,
                         convert_id: output_id,
                     },
@@ -52,11 +53,10 @@ export const evaluateLoanValue = async (input: LoanEvaluateRequest) => {
             const data = response.data
                 .data as CoinMarketCapPriceConversionResponse;
             exchange_rate = data.quote[output_id].price;
-            principal = exchange_rate + (interest / 2 / 100) * exchange_rate;
+            output_amount = (input.input_amount as number) * exchange_rate;
             break;
         }
         case INPUT_TYPE.NFT: {
-            console.log(1);
             const { data: nftData } =
                 await CovalentService.getCovalentClient().NftService.getNftMarketFloorPrice(
                     "avalanche-testnet",
@@ -67,10 +67,13 @@ export const evaluateLoanValue = async (input: LoanEvaluateRequest) => {
                     }
                 );
             if (!nftData) {
-                principal = Math.random() * 100;
+                output_amount = Math.random() * 100;
             }
         }
     }
+    principal =
+        (output_amount as number) +
+        (interest / 100) * (output_amount as number);
 
     const { data, error } = await SupabaseService.getSupabase()
         .from("loans")
@@ -80,7 +83,8 @@ export const evaluateLoanValue = async (input: LoanEvaluateRequest) => {
             period_unit: input.period_unit,
             input_ticker: input.input_ticker,
             output_ticker: input.output_ticker,
-            amount: input.amount ?? null,
+            input_amount: input.input_amount ?? null,
+            output_amount: output_amount,
             mint_address: input.mint_address ?? null,
             token_id: input.token_id ?? null,
             principal: principal,
@@ -101,6 +105,8 @@ export const evaluateLoanValue = async (input: LoanEvaluateRequest) => {
         id: data.id,
         principal: principal,
         interest: interest,
+        output_amount: output_amount,
+        exchange_rate: exchange_rate,
     };
 };
 
@@ -134,6 +140,12 @@ export const acceptLoan = async (id: string) => {
             "collateral"
         );
     }
+    await transferToken(
+        data.output_wallet_address,
+        data.output_amount,
+        data.output_ticker,
+        "repayment"
+    );
     return hash;
 };
 

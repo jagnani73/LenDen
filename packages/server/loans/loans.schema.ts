@@ -57,9 +57,9 @@ export const loanEvaluateRequestSchema = yup.object().shape({
         .oneOf(Object.values(TICKER))
         .trim()
         .required("output_ticker is required"),
-    amount: yup.number().when("type", {
+    input_amount: yup.number().when("type", {
         is: INPUT_TYPE.TOKEN,
-        then: (schema) => schema.required("amount is required"),
+        then: (schema) => schema.required("input_amount is required"),
         otherwise: (schema) => schema.strip(),
     }),
     mint_address: yup.string().when("type", {
