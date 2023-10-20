@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:unfold/file_exporter.dart';
+import 'package:unfold/screens/loan_details/loan_details_view.dart';
 import 'package:unfold/widgets/session_widget.dart';
 import 'package:web3modal_flutter/services/w3m_service/w3m_service.dart';
 import 'package:web3modal_flutter/web3modal_flutter.dart';
@@ -66,57 +67,94 @@ class _HomeViewState extends State<HomeView> {
                 ],
               ),
               50.hGap,
-              Container(
-                width: 400.wWise,
-                height: 200.hWise,
-                decoration: BoxDecoration(
-                    color: Color(0xffDD2282),
-                    borderRadius: BorderRadius.circular(20)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text(
-                      WalletConstants.chainIds.first,
-                      style: GoogleFonts.poppins(
-                          color: Colors.white,
-                          fontSize: 20.hWise,
-                          fontWeight: FontWeight.w500),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LoanDetailsView(
+                        inputTicker: WalletConstants.chainIds.first == "Polygon"
+                            ? "MATIC"
+                            : "AVAX",
+                        outputTicker: WalletConstants.chainIds.last == "Polygon"
+                            ? "AVAX"
+                            : "MATIC",
+                        inputAddress: WalletConstants.walletAddresses.first,
+                        outputAddress: WalletConstants.walletAddresses.last,
+                      ),
                     ),
-                    Icon(Icons.arrow_forward_rounded, color: Colors.white),
-                    Text(WalletConstants.chainIds.last,
+                  );
+                },
+                child: Container(
+                  width: 400.wWise,
+                  height: 200.hWise,
+                  decoration: BoxDecoration(
+                      color: Color(0xffDD2282),
+                      borderRadius: BorderRadius.circular(20)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text(
+                        WalletConstants.chainIds.first,
                         style: GoogleFonts.poppins(
                             color: Colors.white,
                             fontSize: 20.hWise,
-                            fontWeight: FontWeight.w500))
-                  ],
+                            fontWeight: FontWeight.w500),
+                      ),
+                      Icon(Icons.arrow_forward_rounded, color: Colors.white),
+                      Text(WalletConstants.chainIds.last,
+                          style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontSize: 20.hWise,
+                              fontWeight: FontWeight.w500))
+                    ],
+                  ),
                 ),
               ),
               30.hGap,
-              Container(
-                width: 400.wWise,
-                height: 200.hWise,
-                decoration: BoxDecoration(
-                    color: Color(0xffDD2282),
-                    borderRadius: BorderRadius.circular(20)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text(
-                      WalletConstants.chainIds.last,
-                      style: GoogleFonts.poppins(
-                          color: Colors.white,
-                          fontSize: 20.hWise,
-                          fontWeight: FontWeight.w500),
-                    ),
-                    Icon(Icons.arrow_forward_rounded, color: Colors.white),
-                    Text(
-                      WalletConstants.chainIds.first,
-                      style: GoogleFonts.poppins(
-                          color: Colors.white,
-                          fontSize: 20.hWise,
-                          fontWeight: FontWeight.w500),
-                    ),
-                  ],
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => LoanDetailsView(
+                              inputTicker:
+                                  WalletConstants.chainIds.last == "Polygon"
+                                      ? "MATIC"
+                                      : "AVAX",
+                              outputTicker:
+                                  WalletConstants.chainIds.first == "Polygon"
+                                      ? "AVAX"
+                                      : "MATIC",
+                              inputAddress: WalletConstants.chainIds.last,
+                              outputAddress: WalletConstants.chainIds.first)));
+                },
+                child: Container(
+                  width: 400.wWise,
+                  height: 200.hWise,
+                  decoration: BoxDecoration(
+                      color: Color(0xffDD2282),
+                      borderRadius: BorderRadius.circular(20)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text(
+                        WalletConstants.chainIds.last,
+                        style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontSize: 20.hWise,
+                            fontWeight: FontWeight.w500),
+                      ),
+                      Icon(Icons.arrow_forward_rounded, color: Colors.white),
+                      Text(
+                        WalletConstants.chainIds.first,
+                        style: GoogleFonts.poppins(
+                            color: Colors.white,
+                            fontSize: 20.hWise,
+                            fontWeight: FontWeight.w500),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               30.hGap,
