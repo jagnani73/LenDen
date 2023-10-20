@@ -21,9 +21,9 @@ const handleCreateLending = async (
     next: NextFunction
 ) => {
     try {
-        const { amount, ticker, wallet_address } =
+        const { amount, ticker, wallet_address, period } =
             req.body as CreateLendingRequest;
-        await createLending(amount, ticker, wallet_address);
+        await createLending(amount, ticker, wallet_address, period);
         res.json({
             success: true,
         });

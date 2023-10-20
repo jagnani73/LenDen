@@ -5,7 +5,8 @@ import { transferToken } from "../assets/assets.services";
 export const createLending = async (
     amount: number,
     ticker: TICKER,
-    wallet_address: string
+    wallet_address: string,
+    period: number
 ) => {
     const { error } = await SupabaseService.getSupabase()
         .from("lending")
@@ -13,18 +14,13 @@ export const createLending = async (
             amount: amount,
             ticker: ticker,
             wallet_address: wallet_address,
+            period: period,
         });
     if (error) {
         console.error(error);
         throw error;
     }
-    const hash = transferToken(
-        wallet_address,
-        amount.toString(),
-        ticker,
-        "collateral"
-    );
-    return hash;
+    return;
 };
 
 export const completeLending = async (id: string) => {
