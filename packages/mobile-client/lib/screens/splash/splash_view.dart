@@ -14,7 +14,7 @@ class SplashView extends StatefulWidget {
 }
 
 class _SplashViewState extends State<SplashView> {
-  late final W3MService w3mService;
+  late final W3MService _w3mService;
   late final Web3App _web3App;
   bool _initialized = false;
 
@@ -38,13 +38,13 @@ class _SplashViewState extends State<SplashView> {
         ),
       ),
     );
-    w3mService = W3MService(web3App: _web3App);
+    _w3mService = W3MService(web3App: _web3App);
 
     _web3App!.onSessionPing.subscribe(_onSessionPing);
     _web3App!.onSessionEvent.subscribe(_onSessionEvent);
 
     await _web3App.init();
-    await w3mService.init();
+    await _w3mService.init();
 
     // Loop through all the chain data
 
@@ -73,7 +73,7 @@ class _SplashViewState extends State<SplashView> {
         ),
       ),
       nextScreen: StartingPageView(
-        w3mService: w3mService,
+        w3mService: _w3mService,
         web3AppInit: _web3App,
       ),
       splashTransition: SplashTransition.fadeTransition,

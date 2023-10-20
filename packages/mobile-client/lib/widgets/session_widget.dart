@@ -63,7 +63,7 @@ class SessionWidgetState extends State<SessionWidget> {
     );
 
     final ChainMetadata chainMetadata = getChainMetadataFromChain(chainId);
-    WalletConstants.setAddressAndChainId(
+    WalletConstants.setaddressAndChainId(
         account, chainMetadata.w3mChainInfo.chainName);
     log(WalletConstants.chainIds.toString());
     log(WalletConstants.walletAddresses.toString());

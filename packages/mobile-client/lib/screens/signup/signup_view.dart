@@ -5,13 +5,19 @@ import 'package:unfold/file_exporter.dart';
 import 'package:unfold/screens/login_page/login_page_view.dart';
 
 class SignupView extends StatefulWidget {
-  const SignupView({super.key});
+  final W3MService w3mService;
+  final Web3App web3AppInit;
+  const SignupView(
+      {super.key, required this.w3mService, required this.web3AppInit});
 
   @override
   State<SignupView> createState() => _SignupViewState();
 }
 
 class _SignupViewState extends State<SignupView> {
+  late IWeb3App _web3App;
+  late W3MService w3mService;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,7 +64,11 @@ class _SignupViewState extends State<SignupView> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPageView()),
+                  MaterialPageRoute(
+                      builder: (context) => LoginPageView(
+                            w3mService: widget.w3mService,
+                            web3AppInit: widget.web3AppInit,
+                          )),
                 );
               },
               child: Center(

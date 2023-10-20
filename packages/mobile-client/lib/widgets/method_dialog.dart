@@ -1,10 +1,10 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:fl_toast/fl_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:unfold/utils/constants.dart';
-import 'package:unfold/utils/string_constants.dart';
 
 class MethodHandler {
   static Future<void> handle(
@@ -15,9 +15,9 @@ class MethodHandler {
     try {
       var result = await response;
       final String resultString = jsonEncode(result);
-
-      WalletConstants.setSignature(resultString);
-
+      log(resultString);
+      WalletConstants.setSignatures(resultString);
+      log(WalletConstants.signatures.toString());
       // Optional: Show a toast message upon successful setting of wallet constants
       showPlatformToast(
         child: const Text(

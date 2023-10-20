@@ -62,40 +62,25 @@ class NoGlowScrollBehavior extends ScrollBehavior {
 }
 
 class WalletConstants {
-  static const int maxLimit = 2; // Limit for wallet addresses, chains, and signatures
   static List<String> walletAddresses = [];
   static List<String> chainIds = [];
   static List<String> signatures = [];
   static String? username;
   static String? password;
 
-  static void setAddressAndChainId(String newWalletAddress, String newChainId) {
-    // Check if the wallet address or chain ID already exists and if the limit is reached
-    if (!walletAddresses.contains(newWalletAddress) &&
-        !chainIds.contains(newChainId) &&
-        walletAddresses.length < maxLimit &&
-        chainIds.length < maxLimit) {
-      
+  static void setaddressAndChainId(
+    String newWalletAddress,
+    String newChainId,
+  ) {
+    if (!chainIds.contains(newChainId)) {
       walletAddresses.add(newWalletAddress);
       chainIds.add(newChainId);
-    } else {
-      print('Duplicate wallet address/chain ID or limit reached.');
     }
   }
 
-  static void setSignature(String newSignature) {
-    // Check if the signature already exists and if the limit is reached
-    if (!signatures.contains(newSignature) && signatures.length < maxLimit) {
-      signatures.add(newSignature);
-    } else {
-      print('Duplicate signature or limit reached.');
-    }
-  }
-
-  // Function to print the current data - for debugging purposes
-  static void printData() {
-    print('Wallet Addresses: $walletAddresses');
-    print('Chain IDs: $chainIds');
-    print('Signatures: $signatures');
+  static void setSignatures(
+    String newSignatures,
+  ) {
+    signatures.add(newSignatures);
   }
 }

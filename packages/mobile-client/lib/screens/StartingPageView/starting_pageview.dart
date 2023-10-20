@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:unfold/file_exporter.dart';
+import 'package:unfold/screens/home/home_view.dart';
 import 'package:unfold/screens/login_page/login_page_view.dart';
 import 'package:unfold/screens/wallet_connect/wallet_connect_view.dart';
-import 'package:unfold/screens/wallet_connect_view_2/wallet_connect_view2.dart';
+import 'package:unfold/screens/wallet_connect_view_2.dart/wallet_connect_view2.dart';
 import 'package:unfold/utils/constants.dart';
 
 class StartingPageView extends StatefulWidget {
@@ -19,14 +20,15 @@ class StartingPageView extends StatefulWidget {
 
 class _StartingPageViewState extends State<StartingPageView> {
   int _currentPage = 0;
-  late IWeb3App _web3App; // This needs to be defined
-  late W3MService _w3mService; // This needs to be defined
+  late Web3App _web3App;
+  late W3MService _w3mService;
   final controller = PageController();
 
   @override
   void initState() {
     super.initState();
     _web3App = widget.web3AppInit;
+    _w3mService = widget.w3mService;
     _initializeService();
   }
 
@@ -42,15 +44,15 @@ class _StartingPageViewState extends State<StartingPageView> {
   Widget build(BuildContext context) {
     List<Widget> pages = [
       WalletConnectView(
-        onChainSelected: () {
-        // Handle chain selection, like calling Generate Signature
-    },
-        w3mService: widget.w3mService,
-        web3AppInit: widget.web3AppInit,
+        w3mService: _w3mService,
+        web3AppInit: _web3App,
       ),
       WalletConnectView2(
           w3mService: widget.w3mService, web3AppInit: widget.web3AppInit),
-      LoginPageView(),
+      LoginPageView(
+        w3mService: widget.w3mService,
+        web3AppInit: widget.web3AppInit,
+      ),
     ];
 
     return Scaffold(
@@ -105,7 +107,26 @@ class _StartingPageViewState extends State<StartingPageView> {
                           ),
                         ),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        if (_currentPage < pages.length - 1) {
+                          // Navigating to the next page if the current page is not the last one
+                          controller.nextPage(
+                            duration: Duration(milliseconds: 300),
+                            curve: Curves.ease,
+                          );
+                        } else {
+                          // Navigating to the HomeView if the current page is the last one
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => HomeView(
+                                web3AppInit: widget.web3AppInit,
+                                service: widget.w3mService,
+                              ),
+                            ),
+                          );
+                        }
+                      },
                       child: Text(
                         _currentPage < pages.length - 1 ? "NEXT" : "START",
                         style: TextStyle(
