@@ -6,7 +6,7 @@ import {
     type NextFunction,
 } from "express";
 
-const crossChainNFTRouter = Router();
+export const crossChainNFTRouter = Router();
 
 const handleCrossChainNFTMint = async (
     req: Request,
@@ -26,5 +26,3 @@ const handleCrossChainNFTMint = async (
 };
 
 crossChainNFTRouter.post("/mint", handleCrossChainNFTMint);
-
-export default crossChainNFTRouter;
