@@ -9,6 +9,7 @@ export const createLending = async (
     period: number,
     username: string
 ) => {
+    const interest: number = 2;
     const { error } = await SupabaseService.getSupabase()
         .from("lending")
         .insert({
@@ -17,6 +18,8 @@ export const createLending = async (
             wallet_address: wallet_address,
             period: period,
             username: username,
+            interest: interest,
+            maturity: amount + (interest / 100) * amount,
         });
     if (error) {
         console.error(error);
@@ -25,7 +28,7 @@ export const createLending = async (
     return;
 };
 
-export const completeLending = async (id: string) => {
+export const completeLending = async (id: number) => {
     const { data, error } = await SupabaseService.getSupabase()
         .from("lending")
         .update({

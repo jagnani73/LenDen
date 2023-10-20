@@ -37,3 +37,17 @@ export interface Evaluation {
   exchange_rate: number;
   output_amount: number;
 }
+
+export interface Lending {
+  id: number;
+  created_at: string;
+  wallet_address: string;
+  ticker: string;
+  amount: number;
+  interest: number;
+  status: string;
+  period: number;
+  period_unit: string;
+  username: string;
+  maturity: number;
+}
