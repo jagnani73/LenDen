@@ -39,6 +39,7 @@ const handleLoanEvaluation = async (
                 id: id,
                 interest: interest,
                 exchange_rate: exchange_rate,
+                input_amount: data.input_amount,
                 output_amount: output_amount,
                 principal: principal,
                 output_ticker: data.output_ticker,
