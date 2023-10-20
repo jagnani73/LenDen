@@ -22,3 +22,14 @@ export interface Loan {
   additional_interest: number;
   output_amount: number;
 }
+
+export interface Evaluation {
+  id: string;
+  period: number;
+  period_unit: string;
+  output_ticker: string;
+  principal: number;
+  interest: number;
+  exchange_rate: number;
+  output_amount: number;
+}

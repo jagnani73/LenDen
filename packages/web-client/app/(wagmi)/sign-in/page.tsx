@@ -64,8 +64,15 @@ const SignInPage: React.FC = () => {
     async (values: { username: string; password: string }) => {
       try {
         setLoading(true);
-        const authToken = await usersSignIn(values.username, values.password);
-        setUser({ authToken: authToken as string, username: values.username });
+        const { token, wallet_addresses } = await usersSignIn(
+          values.username,
+          values.password
+        );
+        setUser({
+          authToken: token,
+          username: values.username,
+          wallet_addresses: wallet_addresses,
+        });
         push("/loans");
       } catch (error) {
         console.error(error);

@@ -1,4 +1,4 @@
-import { Loan } from "../types/services.types";
+import { Evaluation, Loan } from "../types/services.types";
 
 const baseUrl: string = "http://localhost:8080/api/v1";
 
@@ -42,7 +42,7 @@ export const usersSignIn = async (username: string, password: string) => {
       },
     });
     const data = await response.json();
-    return data.token as string;
+    return data;
   } catch (error) {
     console.error(error);
     return null;
@@ -51,7 +51,7 @@ export const usersSignIn = async (username: string, password: string) => {
 
 export const fetchLoansForUsername = async (username: string) => {
   try {
-    const response = await fetch(`${baseUrl}/loans/hs`, {
+    const response = await fetch(`${baseUrl}/loans/${username}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -62,5 +62,40 @@ export const fetchLoansForUsername = async (username: string) => {
   } catch (error) {
     console.error(error);
     return null;
+  }
+};
+
+export const evaluateLoan = async (loan: any) => {
+  try {
+    const response = await fetch(`${baseUrl}/loans/evaluate`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(loan),
+    });
+    const { evaluation } = await response.json();
+    return evaluation as Evaluation;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+export const acceptLoan = async (id: string) => {
+  try {
+    await fetch(`${baseUrl}/loans/accept`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: id,
+      }),
+    });
+    return;
+  } catch (error) {
+    console.error(error);
+    return;
   }
 };
