@@ -1,3 +1,5 @@
+import { Loan } from "../types/services.types";
+
 const baseUrl: string = "http://localhost:8080/api/v1";
 
 export const usersSignUp = async (
@@ -41,6 +43,22 @@ export const usersSignIn = async (username: string, password: string) => {
     });
     const data = await response.json();
     return data.token as string;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+export const fetchLoansForUsername = async (username: string) => {
+  try {
+    const response = await fetch(`${baseUrl}/loans/hs`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await response.json();
+    return data.loans as Loan[];
   } catch (error) {
     console.error(error);
     return null;

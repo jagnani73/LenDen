@@ -14,7 +14,7 @@ export interface CoinMarketCapPriceConversionResponse {
     };
 }
 
-export enum INPUT_TYPE {
+export enum LOAN_TYPE {
     NFT = "nft",
     TOKEN = "token",
 }
@@ -39,7 +39,7 @@ export const loanEvaluateRequestSchema = yup
         type: yup
             .string()
             .trim()
-            .oneOf(Object.values(INPUT_TYPE))
+            .oneOf(Object.values(LOAN_TYPE))
             .required("type is required"),
         period: yup.number().oneOf([1, 2, 3]).required("period is required"),
         period_unit: yup
@@ -60,18 +60,18 @@ export const loanEvaluateRequestSchema = yup
             .trim()
             .required("output_ticker is required"),
         input_amount: yup.number().when("type", {
-            is: INPUT_TYPE.TOKEN,
+            is: LOAN_TYPE.TOKEN,
             then: (schema) => schema.required("input_amount is required"),
             otherwise: (schema) => schema.strip(),
         }),
         mint_address: yup.string().when("type", {
-            is: INPUT_TYPE.NFT,
+            is: LOAN_TYPE.NFT,
             then: (schema) =>
                 schema.trim().required("mint_address is required"),
             otherwise: (schema) => schema.strip(),
         }),
         token_id: yup.string().when("type", {
-            is: INPUT_TYPE.NFT,
+            is: LOAN_TYPE.NFT,
             then: (schema) => schema.trim().required("token_id is required"),
             otherwise: (schema) => schema.strip(),
         }),
