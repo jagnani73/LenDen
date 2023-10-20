@@ -1,5 +1,5 @@
 import {
-    INPUT_TYPE,
+    LOAN_TYPE,
     TICKER,
     type LoanEvaluateRequest,
     TOKEN_ID,
@@ -39,7 +39,7 @@ export const evaluateLoanValue = async (input: LoanEvaluateRequest) => {
     }
 
     switch (input.type) {
-        case INPUT_TYPE.TOKEN: {
+        case LOAN_TYPE.TOKEN: {
             const response = await CoinMarketCapService.getService().get(
                 "/v2/tools/price-conversion",
                 {
@@ -56,7 +56,7 @@ export const evaluateLoanValue = async (input: LoanEvaluateRequest) => {
             output_amount = (input.input_amount as number) * exchange_rate;
             break;
         }
-        case INPUT_TYPE.NFT: {
+        case LOAN_TYPE.NFT: {
             const { data: nftData } =
                 await CovalentService.getCovalentClient().NftService.getNftMarketFloorPrice(
                     "avalanche-testnet",
@@ -124,7 +124,7 @@ export const acceptLoan = async (id: string) => {
         throw error;
     }
     let hash: string = "";
-    if (data.type === INPUT_TYPE.NFT) {
+    if (data.type === LOAN_TYPE.NFT) {
         hash = await transferNFT(
             data.input_wallet_address,
             data.mint_address,
@@ -132,7 +132,7 @@ export const acceptLoan = async (id: string) => {
             data.input_ticker,
             "collateral"
         );
-    } else if (data.type === INPUT_TYPE.TOKEN) {
+    } else if (data.type === LOAN_TYPE.TOKEN) {
         hash = await transferToken(
             data.input_wallet_address,
             data.amount,
@@ -197,7 +197,7 @@ export const getLoansForUser = async (username: string) => {
         }
         if (warning_intensity === 4) {
             const new_status =
-                loan.type === INPUT_TYPE.NFT ? "bidding" : "allotted";
+                loan.type === LOAN_TYPE.NFT ? "bidding" : "allotted";
             const { error } = await SupabaseService.getSupabase()
                 .from("loans")
                 .update({
@@ -235,7 +235,7 @@ export const repaymentLoan = async (id: string) => {
         data.output_ticker,
         "collateral"
     );
-    if (data.type === INPUT_TYPE.NFT) {
+    if (data.type === LOAN_TYPE.NFT) {
         hash = await transferNFT(
             data.input_wallet_address,
             data.mint_address,
@@ -243,7 +243,7 @@ export const repaymentLoan = async (id: string) => {
             data.input_ticker,
             "repayment"
         );
-    } else if (data.type === INPUT_TYPE.TOKEN) {
+    } else if (data.type === LOAN_TYPE.TOKEN) {
         hash = await transferToken(
             data.input_wallet_address,
             data.amount,

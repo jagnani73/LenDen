@@ -8,9 +8,14 @@ import * as Yup from "yup";
 import { CustomField } from "@/components/shared";
 import { usersSignIn } from "@/utils/services/api";
 import { useUser } from "@/utils/store";
+import { useRouter } from "next/navigation";
 
 const SignInPage: React.FC = () => {
   const { setUser } = useUser();
+
+  const { push } = useRouter();
+
+  const [loading, setLoading] = useState<boolean>(false);
 
   const CLASSNAMES = useMemo<FieldClassnames>(
     () => ({
@@ -57,10 +62,18 @@ const SignInPage: React.FC = () => {
 
   const submitHandler = useCallback(
     async (values: { username: string; password: string }) => {
-      const authToken = await usersSignIn(values.username, values.password);
-      setUser({ authToken: authToken as string, username: values.username });
+      try {
+        setLoading(true);
+        const authToken = await usersSignIn(values.username, values.password);
+        setUser({ authToken: authToken as string, username: values.username });
+        push("/loans");
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
     },
-    [setUser]
+    [push, setUser]
   );
 
   return (
@@ -101,9 +114,9 @@ const SignInPage: React.FC = () => {
               <button
                 type="submit"
                 className="border bg-neutral-900 text-white rounded-md mt-6 px-4 py-4 w-full"
-                disabled={Object.keys(errors).length > 0}
+                disabled={Object.keys(errors).length > 0 || loading}
               >
-                Sign In
+                {!loading ? "Sign In" : "loading..."}
               </button>
             </Form>
           )}
