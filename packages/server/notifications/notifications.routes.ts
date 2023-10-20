@@ -1,16 +1,24 @@
 import {
+    Router,
+    type Request,
+    type Response,
+    type NextFunction,
+} from "express";
+import {
     sendNotification,
     userSpecificNotification,
     createChannelSettings,
     optOutOfSettings,
     sendSettingsNotification,
 } from "./notifications.services";
-import type { Request, Response } from "express";
-import { Router } from "express";
 
 export const notificationRouter = Router();
 
-const handleSendNotification = async (req: Request, res: Response) => {
+const handleSendNotification = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
     try {
         const { title, description } = req.body;
         const response = await sendNotification(title, description);
@@ -20,11 +28,15 @@ const handleSendNotification = async (req: Request, res: Response) => {
             data: response,
         });
     } catch (err) {
-        console.log(err);
+        next(err);
     }
 };
 
-const handleUserSpecificNotification = async (req: Request, res: Response) => {
+const handleUserSpecificNotification = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
     try {
         const { title, description, wallet_address } = req.body;
         const response = await userSpecificNotification(
@@ -36,24 +48,32 @@ const handleUserSpecificNotification = async (req: Request, res: Response) => {
             success: true,
             data: response,
         });
-    } catch (error) {
-        console.log(error);
+    } catch (err) {
+        next(err);
     }
 };
 
-const handleCreateChannelSettings = async (req: Request, res: Response) => {
+const handleCreateChannelSettings = async (
+    _req: Request,
+    res: Response,
+    next: NextFunction
+) => {
     try {
         const response = await createChannelSettings();
         res.json({
             success: true,
             data: response,
         });
-    } catch (error) {
-        console.log(error);
+    } catch (err) {
+        next(err);
     }
 };
 
-const handleOptOutOfSettings = async (req: Request, res: Response) => {
+const handleOptOutOfSettings = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
     try {
         const { index, userId } = req.body;
         const response = await optOutOfSettings(index, userId);
@@ -61,12 +81,16 @@ const handleOptOutOfSettings = async (req: Request, res: Response) => {
             success: true,
             data: response,
         });
-    } catch (error) {
-        console.log(error);
+    } catch (err) {
+        next(err);
     }
 };
 
-const handleSendSettingsNotification = async (req: Request, res: Response) => {
+const handleSendSettingsNotification = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
     try {
         const { index } = req.body;
         const response = await sendSettingsNotification(index);
@@ -74,8 +98,8 @@ const handleSendSettingsNotification = async (req: Request, res: Response) => {
             success: true,
             data: response,
         });
-    } catch (error) {
-        console.log(error);
+    } catch (err) {
+        next(err);
     }
 };
 
