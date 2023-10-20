@@ -1,6 +1,7 @@
 import {
     sendNotification,
     userSpecificNotification,
+    createChannelSettings,
 } from "./notifications.services";
 import { Router } from "express";
 
@@ -10,7 +11,7 @@ const handleSendNotification = async (req: any, res: any) => {
     try {
         const { title, body } = req.body;
         const response = await sendNotification(title, body);
-        
+
         res.json({
             success: true,
             data: response,
@@ -37,5 +38,18 @@ const handleUserSpecificNotification = async (req: any, res: any) => {
     }
 };
 
+const handleCreateChannelSettings = async (req: any, res: any) => {
+    try {
+        const response = await createChannelSettings();
+        res.json({
+            success: true,
+            data: response,
+        });
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 notificationRouter.post("/send", handleSendNotification);
 notificationRouter.post("/send/user", handleUserSpecificNotification);
+notificationRouter.post("/settings", handleCreateChannelSettings);
