@@ -1,3 +1,4 @@
+import { TICKER } from "../constants/services.constants";
 import { Evaluation, Loan } from "../types/services.types";
 
 const baseUrl: string = "http://localhost:8080/api/v1";
@@ -109,6 +110,32 @@ export const repayLoan = async (id: string) => {
       },
       body: JSON.stringify({
         id: id,
+      }),
+    });
+    return;
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+};
+
+export const createLending = async (
+  wallet_address: string,
+  ticker: TICKER,
+  amount: number,
+  period: number
+) => {
+  try {
+    await fetch(`${baseUrl}/lending/create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        wallet_address: wallet_address,
+        ticker: ticker,
+        amount: amount,
+        period: period,
       }),
     });
     return;

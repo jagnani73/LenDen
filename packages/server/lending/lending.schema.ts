@@ -13,6 +13,7 @@ export const createLendingRequestSchema = yup
             .string()
             .trim()
             .required("wallet_address is required"),
+        period: yup.number().required("period is required"),
     })
     .strict();
 
