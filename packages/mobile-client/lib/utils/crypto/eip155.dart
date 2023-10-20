@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:web3dart/web3dart.dart';
 import 'package:web3modal_flutter/web3modal_flutter.dart';
@@ -10,8 +11,8 @@ import 'package:unfold/utils/crypto/web3dart_extension.dart';
 
 enum EIP155UIMethods {
   personalSign,
+  ethSendTransaction,
 }
-
 
 extension EIP155MethodsX on EIP155UIMethods {
   String? get value => EIP155.methods[this];
@@ -26,11 +27,10 @@ extension EIP155MethodsStringX on String {
   }
 }
 
-
-
 class EIP155 {
   static const ethRequiredMethods = [
     'personal_sign',
+    'eth_sendTransaction',
   ];
   static const walletSwitchEthChain = 'wallet_switchEthereumChain';
   static const walletAddEthChain = 'wallet_addEthereumChain';
@@ -49,12 +49,12 @@ class EIP155 {
 
   static final Map<EIP155UIMethods, String> methods = {
     EIP155UIMethods.personalSign: 'personal_sign',
+    EIP155UIMethods.ethSendTransaction: 'eth_sendTransaction',
     // EIP155Methods.ethSign: 'eth_sign',
     // EIP155Methods.ethSignTransaction: 'eth_signTransaction',
     // EIP155Methods.walletSwitchEthereumChain: 'wallet_switchEthereumChain',
     // EIP155Methods.walletAddEthereumChain: 'wallet_addEthereumChain'
   };
-
 
   static Future<dynamic> callMethod({
     required IWeb3App web3App,
@@ -71,6 +71,17 @@ class EIP155 {
           chainId: chainId,
           address: address,
           data: testSignData,
+        );
+      case EIP155UIMethods.ethSendTransaction:
+        return ethSendTransaction(
+          web3App: web3App,
+          topic: topic,
+          chainId: chainId,
+          transaction: EthereumTransaction(
+            from: address,
+            to: "0xeC2265da865A947647CE6175a4a2646318f6DCEb",
+            value: "1",
+          ),
         );
 
       // case EIP155UIMethods.ethSign:
@@ -123,6 +134,21 @@ class EIP155 {
     );
   }
 
+  static Future<dynamic> ethSendTransaction({
+    required IWeb3App web3App,
+    required String topic,
+    required String chainId,
+    required EthereumTransaction transaction,
+  }) async {
+    return await web3App.request(
+      topic: topic,
+      chainId: chainId,
+      request: SessionRequestParams(
+        method: methods[EIP155UIMethods.ethSendTransaction]!,
+        params: [transaction.toJson()],
+      ),
+    );
+  }
   // static Future<dynamic> walletSwitchChain({
   //   required IWeb3App web3App,
   //   required String topic,

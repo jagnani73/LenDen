@@ -107,7 +107,7 @@ class _StartingPageViewState extends State<StartingPageView> {
                           ),
                         ),
                       ),
-                      onPressed: () {
+                      onPressed: () async {
                         if (_currentPage < pages.length - 1) {
                           // Navigating to the next page if the current page is not the last one
                           controller.nextPage(

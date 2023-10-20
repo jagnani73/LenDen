@@ -1,13 +1,11 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:easy_widgets/easy_widget_extensions.dart';
 import 'package:flutter/material.dart';
-import 'package:unfold/file_exporter.dart';
 import 'package:http/http.dart' as http;
-
-import '../../components/login_button.dart';
-import '../../components/text_field.dart';
+import 'package:unfold/screens/loan_approval.dart/token_loan_approval_view.dart'
+    as token_loan;
+import 'package:unfold/screens/loan_approval.dart/token_loan_approval_view.dart';
 
 class TokenLoanView extends StatefulWidget {
   final String inputTicker;
@@ -15,13 +13,15 @@ class TokenLoanView extends StatefulWidget {
   final String inputAddress;
   final String outputAddress;
   final String type;
-  const TokenLoanView(
-      {super.key,
-      required this.inputAddress,
-      required this.outputAddress,
-      required this.type,
-      required this.inputTicker,
-      required this.outputTicker});
+
+  const TokenLoanView({
+    Key? key,
+    required this.inputAddress,
+    required this.outputAddress,
+    required this.type,
+    required this.inputTicker,
+    required this.outputTicker,
+  }) : super(key: key);
 
   @override
   State<TokenLoanView> createState() => _TokenLoanViewState();
@@ -30,7 +30,7 @@ class TokenLoanView extends StatefulWidget {
 class _TokenLoanViewState extends State<TokenLoanView> {
   final TextEditingController _periodController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
-  bool isLoading = false; // To handle the loading state
+  bool isLoading = false;
 
   @override
   void dispose() {
@@ -40,117 +40,198 @@ class _TokenLoanViewState extends State<TokenLoanView> {
   }
 
   Future<bool> tokenloan() async {
+    if (_amountController.text.isEmpty || _periodController.text.isEmpty) {
+      print('Amount and period cannot be empty');
+      return false;
+    }
+
     setState(() {
       isLoading = true;
     });
 
-    var url = Uri.parse(
-        'https://fd6e-2409-40f2-104c-48fd-24c8-427d-126-e57e.ngrok.io/api/v1/loans/evaluate');
+    bool success = false;
 
-    int startTimeEpoch = DateTime.now().millisecondsSinceEpoch;
-    int period = int.parse(_periodController.text);
+    try {
+      var url = Uri.parse(
+          'https://6ac6-2409-40f2-104c-48fd-71e9-9608-c1a2-6ce6.ngrok.io/api/v1/loans/evaluate');
 
-    Map<String, dynamic> requestBody = {
-      "type": "token",
-      "input_ticker": widget.inputTicker,
-      "period_unit": "weeks",
-      "period": period,
-      "start_time": startTimeEpoch,
-      "output_ticker": widget.outputTicker,
-      "input_wallet_address": widget.inputAddress,
-      "output_wallet_address": widget.outputAddress,
-      "username": "hs",
-      "amount": _amountController.text,
-    };
-    log(startTimeEpoch.toString());
+      int startTimeEpoch = DateTime.now().millisecondsSinceEpoch;
+      int period = int.tryParse(_periodController.text) ?? 0;
+      int amount = int.tryParse(_amountController.text) ?? 0;
 
-    final response = await http.post(
-      url,
-      body: jsonEncode(requestBody),
-      headers: {'Content-Type': 'application/json'},
-    );
+      Map<String, dynamic> requestBody = {
+        "type": "token",
+        "input_ticker": widget.inputTicker,
+        "period_unit": "weeks",
+        "period": period,
+        "start_time": startTimeEpoch.toString(),
+        "output_ticker": widget.outputTicker,
+        "input_wallet_address": widget.inputAddress,
+        "output_wallet_address": widget.outputAddress,
+        "username": "hs",
+        "input_amount": amount,
+      };
 
-    print(response.body);
+      final response = await http.post(
+        url,
+        body: jsonEncode(requestBody),
+        headers: {'Content-Type': 'application/json'},
+      );
 
-    setState(() {
-      isLoading = false; // Reset the loading state after API call
-    });
+      setState(() {
+        isLoading = false;
+      });
 
-    if (response.statusCode == 200) {
-      final responseBody = json.decode(response.body);
+     if (response.statusCode == 200) {
+        final responseBody = json.decode(response.body);
+        TokenLoanApiResponse apiResponse =
+            TokenLoanApiResponse.fromJson(responseBody);
 
-      if (responseBody['success'] == true) {
-        log(jsonEncode(responseBody));
-        return true;
+        if (apiResponse.success) {
+          // ignore: use_build_context_synchronously
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => TokenLoanApprovalView(
+                  evaluation: apiResponse.evaluation),  // use the prefixed import here
+            ),
+          );
+        } else {
+          print('API Response Success is false');
+        }
+    
       } else {
-        return false;
+        print('Error: ${response.statusCode}');
+        print('Response Body: ${response.body}');
       }
-    } else {
-      throw Exception('Failed to load');
+    } catch (e) {
+      print('Exception: $e');
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
+
+    return success;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: const Color.fromARGB(31, 240, 237, 237),
-        body: SafeArea(
-          child: isLoading // Check if it is loading
-              ? Center(
-                  child: CircularProgressIndicator()) // Show loading indicator
-              : SingleChildScrollView(
-                  child: Center(
-                      child: Padding(
+      backgroundColor:
+          Colors.grey[200], // Adjust the color according to your needs
+      body: SafeArea(
+        child: isLoading
+            ? Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                child: Center(
+                  child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        150.hGap,
-                        Text("Token as Collateral",
-                            style: GoogleFonts.poppins(
-                              textStyle: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 40,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            )).alignCL,
-                        20.hGap,
-                        Text("Enter details",
-                            style: GoogleFonts.poppins(
-                              textStyle: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            )).alignCL,
-                        40.hGap,
-                        MyTextField(
-                                controller: _amountController,
-                                hintText: "Amount",
-                                obscureText: false)
-                            .alignCL,
-                        30.hGap,
-                        MyTextField(
-                                controller: _periodController,
-                                hintText: "Period (1,2,3)",
-                                obscureText: false)
-                            .alignCL,
-                        50.hGap,
-                        LoginButton(
-                            onTap: () async {
-                              bool isSuccess = await tokenloan();
-                              if (isSuccess) {
-                                print("Loan request is successful.");
-                              } else {
-                                print("Loan request failed.");
-                              }
-                            },
-                            buttonText: "Request Money")
+                        SizedBox(height: 150),
+                        Text(
+                          "Token as Collateral",
+                          style: TextStyle(
+                            color: Colors
+                                .black, // Adjust the color according to your needs
+                            fontSize: 40,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Text(
+                          "Enter details",
+                          style: TextStyle(
+                            color: Colors
+                                .black, // Adjust the color according to your needs
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        SizedBox(height: 40),
+                        TextField(
+                          controller: _amountController,
+                          decoration: InputDecoration(hintText: "Amount"),
+                        ),
+                        SizedBox(height: 30),
+                        TextField(
+                          controller: _periodController,
+                          decoration:
+                              InputDecoration(hintText: "Period (1,2,3)"),
+                        ),
+                        SizedBox(height: 50),
+                        ElevatedButton(
+                          onPressed: () async {
+                            bool isSuccess = await tokenloan();
+                            if (isSuccess) {
+                              print("Loan request is successful.");
+                            } else {
+                              print("Loan request failed.");
+                            }
+                          },
+                          child: Text("Request Money"),
+                        )
                       ],
                     ),
-                  )),
+                  ),
                 ),
-        ));
+              ),
+      ),
+    );
+  }
+}
+
+class TokenLoanApiResponse {
+  bool success;
+  EvaluationToken evaluation;
+
+  TokenLoanApiResponse({
+    required this.success,
+    required this.evaluation,
+  });
+
+  factory TokenLoanApiResponse.fromJson(Map<String, dynamic> json) {
+    return TokenLoanApiResponse(
+      success: json['success'],
+      evaluation: EvaluationToken.fromJson(json['evaluation']),
+    );
+  }
+}
+
+class EvaluationToken {
+  String id;
+  int interest;
+  int exchangeRate;
+  double outputAmount;
+  double principal;
+  String outputTicker;
+  int period;
+  String periodUnit;
+
+  EvaluationToken({
+    required this.id,
+    required this.interest,
+    required this.exchangeRate,
+    required this.outputAmount,
+    required this.principal,
+    required this.outputTicker,
+    required this.period,
+    required this.periodUnit,
+  });
+
+  factory EvaluationToken.fromJson(Map<String, dynamic> json) {
+    return EvaluationToken(
+      id: json['id'],
+      interest: json['interest'],
+      exchangeRate: json['exchange_rate'],
+      outputAmount: json['output_amount'].toDouble(),
+      principal: json['principal'].toDouble(),
+      outputTicker: json['output_ticker'],
+      period: json['period'],
+      periodUnit: json['period_unit'],
+    );
   }
 }

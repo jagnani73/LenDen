@@ -121,6 +121,7 @@ class _WalletConnectViewState extends State<WalletConnectView> {
                       session: _w3mService.web3App!.sessions.getAll().first,
                       web3App: _w3mService.web3App!,
                       launchRedirect: () {
+                        
                         _w3mService.launchConnectedWallet();
                       },
                     )

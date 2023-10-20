@@ -157,6 +157,7 @@ class SessionWidgetState extends State<SessionWidget> {
           method: method.toEip155Method()!,
           chainId: chainMetadata.w3mChainInfo.namespace,
           address: address.toLowerCase(),
+          
         );
       // case ChainType.kadena:
       //   return Kadena.callMethod(
