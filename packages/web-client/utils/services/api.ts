@@ -26,3 +26,23 @@ export const usersSignUp = async (
     console.error(error);
   }
 };
+
+export const usersSignIn = async (username: string, password: string) => {
+  try {
+    const response = await fetch(`${baseUrl}/users/sign-in`, {
+      method: "POST",
+      body: JSON.stringify({
+        username: username,
+        password: password,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await response.json();
+    return data.token as string;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};

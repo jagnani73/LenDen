@@ -193,7 +193,7 @@ const SignUpPage: React.FC = () => {
                   Object.keys(connectedChains).length < 2
                 }
               >
-                Login
+                Sign Up
               </button>
             </Form>
           )}
