@@ -7,10 +7,10 @@ import { CreateYupSchema } from "@/utils/functions";
 import * as Yup from "yup";
 import { CustomField } from "@/components/shared";
 import { usersSignIn } from "@/utils/services/api";
-import { useAuthToken } from "@/utils/store";
+import { useUser } from "@/utils/store";
 
 const SignInPage: React.FC = () => {
-  const { setAuthToken } = useAuthToken();
+  const { setUser } = useUser();
 
   const CLASSNAMES = useMemo<FieldClassnames>(
     () => ({
@@ -58,9 +58,9 @@ const SignInPage: React.FC = () => {
   const submitHandler = useCallback(
     async (values: { username: string; password: string }) => {
       const authToken = await usersSignIn(values.username, values.password);
-      setAuthToken(authToken);
+      setUser({ authToken: authToken as string, username: values.username });
     },
-    [setAuthToken]
+    [setUser]
   );
 
   return (
