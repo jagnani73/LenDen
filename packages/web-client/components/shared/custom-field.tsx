@@ -1,3 +1,5 @@
+"use client";
+
 import { Field } from "formik";
 
 import { CustomFieldTypes } from "@/utils/types/shared.types";

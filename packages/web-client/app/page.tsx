@@ -1,23 +1,23 @@
-import Link from "next/link";
+import { Pixelify_Sans } from "next/font/google";
+
+const pixelifySanse = Pixelify_Sans({
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "500", "600"],
+});
 
 const HomePage: React.FC = () => {
   return (
-    <main className="flex items-center justify-center w-full">
-      <div className="flex gap-x-4 justify-center items-center">
-        <Link
-          href={"/sign-up"}
-          className="border border-neutral-900 rounded-md px-4 py-2"
-        >
-          Sign Up
-        </Link>
-        <Link
-          href={"/sign-in"}
-          className="border border-neutral-900 rounded-md px-4 py-2"
-        >
-          Sign In
-        </Link>
-      </div>
-    </main>
+    <section>
+      <h2
+        className={`text-9xl ${pixelifySanse.className} font-bold text-center mt-20`}
+      >
+        Cross Chain
+      </h2>
+      <h3 className={`text-6xl ${pixelifySanse.className} text-center mt-8`}>
+        Borrow. Reputation. Auction. Lend.
+      </h3>
+    </section>
   );
 };
 
