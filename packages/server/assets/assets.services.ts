@@ -4,8 +4,8 @@ import { TICKER } from "../loans/loans.schema";
 
 export const transferNFT = async (
     wallet: string,
-    token_id: string,
     collection_address: string,
+    token_id: string,
     ticker: TICKER,
     mode: "collateral" | "repayment"
 ) => {

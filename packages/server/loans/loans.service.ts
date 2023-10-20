@@ -127,8 +127,8 @@ export const acceptLoan = async (id: string) => {
     if (data.type === INPUT_TYPE.NFT) {
         hash = await transferNFT(
             data.input_wallet_address,
-            data.token_id,
             data.mint_address,
+            data.token_id,
             data.input_ticker,
             "collateral"
         );
@@ -216,7 +216,7 @@ export const getLoansForUser = async (username: string) => {
 };
 
 export const repaymentLoan = async (id: string) => {
-    const { error } = await SupabaseService.getSupabase()
+    const { data, error } = await SupabaseService.getSupabase()
         .from("loans")
         .update({
             status: "repayed",
@@ -228,4 +228,29 @@ export const repaymentLoan = async (id: string) => {
         console.error(error);
         throw error;
     }
+    let hash: string = "";
+    await transferToken(
+        data.output_wallet_address,
+        data.principal,
+        data.output_ticker,
+        "collateral"
+    );
+    if (data.type === INPUT_TYPE.NFT) {
+        hash = await transferNFT(
+            data.input_wallet_address,
+            data.mint_address,
+            data.token_id,
+            data.input_ticker,
+            "repayment"
+        );
+    } else if (data.type === INPUT_TYPE.TOKEN) {
+        hash = await transferToken(
+            data.input_wallet_address,
+            data.amount,
+            data.input_ticker,
+            "repayment"
+        );
+    }
+
+    return hash;
 };
