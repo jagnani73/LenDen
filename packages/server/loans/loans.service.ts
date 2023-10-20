@@ -67,7 +67,7 @@ export const evaluateLoanValue = async (input: LoanEvaluateRequest) => {
                     }
                 );
             if (!nftData) {
-                output_amount = Math.random() * 100;
+                output_amount = Math.random();
             }
         }
     }
@@ -125,15 +125,6 @@ export const acceptLoan = async (id: string) => {
         throw error;
     }
     let hash: string = "";
-    if (data.type === LOAN_TYPE.NFT) {
-        await transferNFT(
-            data.input_wallet_address,
-            data.mint_address,
-            data.token_id,
-            data.input_ticker,
-            "collateral"
-        );
-    }
     hash = await transferToken(
         data.output_wallet_address,
         data.output_amount.toString(),
@@ -223,12 +214,6 @@ export const repaymentLoan = async (id: string) => {
         throw error;
     }
     let hash: string = "";
-    await transferToken(
-        data.output_wallet_address,
-        data.principal,
-        data.output_ticker,
-        "collateral"
-    );
     if (data.type === LOAN_TYPE.NFT) {
         hash = await transferNFT(
             data.input_wallet_address,
@@ -240,7 +225,7 @@ export const repaymentLoan = async (id: string) => {
     } else if (data.type === LOAN_TYPE.TOKEN) {
         hash = await transferToken(
             data.input_wallet_address,
-            data.amount,
+            data.input_amount.toString(),
             data.input_ticker,
             "repayment"
         );

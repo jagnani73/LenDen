@@ -27,8 +27,10 @@ export interface Evaluation {
   id: string;
   period: number;
   period_unit: string;
-  output_ticker: string;
+  output_ticker: TICKER;
   input_amount: number;
+  mint_address: string;
+  token_id: string;
   principal: number;
   interest: number;
   exchange_rate: number;

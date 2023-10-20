@@ -45,6 +45,8 @@ const handleLoanEvaluation = async (
                 output_ticker: data.output_ticker,
                 period: data.period,
                 period_unit: data.period_unit,
+                mint_address: data.mint_address,
+                token_id: data.token_id,
             },
         });
     } catch (err) {
@@ -92,11 +94,11 @@ const handleRepayLoans = async (
     next: NextFunction
 ) => {
     try {
-        const { id } = req.params as LoanRepaymentRequest;
+        const { id } = req.body as LoanRepaymentRequest;
         const loans = await repaymentLoan(id);
         res.json({
             success: true,
-            loans: loans,
+            trasaction_hash: loans,
         });
     } catch (err) {
         next(err);
