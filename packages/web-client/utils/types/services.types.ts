@@ -51,3 +51,11 @@ export interface Lending {
   username: string;
   maturity: number;
 }
+
+export interface Bid {
+  id: string;
+  loan_id: string;
+  created_at: string;
+  amount: number;
+  wallet_address: string;
+}

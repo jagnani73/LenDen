@@ -1,49 +1,29 @@
 import { SupabaseService } from "../services";
 
-export const fetchBidItems = async () => {
+export const fetchBidItem = async (id: string) => {
     const { data, error } = await SupabaseService.getSupabase()
         .from("loans")
-        .select("*, bids(*)")
-        .eq("status", "bidding");
-
+        .select()
+        .eq("id", id)
+        .single();
     if (error) {
         console.error(error);
         throw error;
     }
-    for (const loan_item of data) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        loan_item.bids = loan_item.bids.reduce((highest: any, current: any) => {
-            return current.amount > highest.amount ? current : highest;
-        }, loan_item.bids[0]);
-        const weeks_passed = Math.floor(
-            (new Date(loan_item.bids.created_at).getTime() -
-                new Date(loan_item.start_time).getTime()) /
-                (1000 * 60 * 60 * 24 * 7)
-        );
-        if (weeks_passed > 1) {
-            const { error } = await SupabaseService.getSupabase()
-                .from("loans")
-                .update({
-                    status: "allotted",
-                })
-                .eq("id", loan_item.id);
-            if (error) {
-                console.error(error);
-                throw error;
-            }
-        }
-        loan_item.status = "allotted";
-    }
-
     return data;
 };
 
-export const createBidItems = async (loan_id: string, amount: number) => {
+export const createBid = async (
+    loan_id: string,
+    amount: number,
+    wallet_address: string
+) => {
     const { data, error } = await SupabaseService.getSupabase()
         .from("bids")
         .insert({
             loan_id: loan_id,
             amount: amount,
+            wallet_address: wallet_address,
         });
     if (error) {
         console.error(error);
@@ -62,6 +42,27 @@ export const fetchBids = async (loan_id: string) => {
     if (error) {
         console.error(error);
         throw error;
+    }
+
+    if (
+        data.length &&
+        Math.floor(
+            (new Date().getTime() - new Date(data[0].created_at).getTime()) /
+                (1000 * 60 * 60 * 24 * 7)
+        ) >= 1
+    ) {
+        const new_status: string = "allotted";
+        const { error } = await SupabaseService.getSupabase()
+            .from("loans")
+            .update({
+                status: new_status,
+            })
+            .eq("id", data[0].loan_id);
+        if (error) {
+            console.error(error);
+            throw error;
+        }
+        data[0].status = new_status;
     }
     return data;
 };

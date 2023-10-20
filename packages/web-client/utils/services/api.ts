@@ -1,5 +1,5 @@
 import { TICKER } from "../constants/services.constants";
-import { Evaluation, Lending, Loan } from "../types/services.types";
+import { Bid, Evaluation, Lending, Loan } from "../types/services.types";
 
 const baseURL: string = "http://localhost:8080/api/v1";
 
@@ -176,6 +176,62 @@ export const completeLend = async (id: number) => {
     });
     const hash = await response.json();
     return hash as string;
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+};
+
+export const fetchBids = async (loan_id: string) => {
+  try {
+    const response = await fetch(`${baseURL}/bids/${loan_id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await response.json();
+    return data.bids as Bid[];
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+};
+
+export const fetchBidItem = async (id: string) => {
+  try {
+    const response = await fetch(`${baseURL}/bids/loan/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await response.json();
+    return data.item as Loan;
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+};
+
+export const addBid = async (
+  loan_id: string,
+  amount: string,
+  wallet_address: string
+) => {
+  try {
+    await fetch(`${baseURL}/bids`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        loan_id: loan_id,
+        amount: amount,
+        wallet_address: wallet_address,
+      }),
+    });
+    return;
   } catch (error) {
     console.error(error);
     return;
