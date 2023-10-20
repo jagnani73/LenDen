@@ -10,8 +10,14 @@ import {
     createLendingRequestSchema,
     completeLendingRequestSchema,
     type CompleteLendingRequest,
+    lendingRequestSchema,
+    type LendingRequest,
 } from "./lending.schema";
-import { completeLending, createLending } from "./lending.service";
+import {
+    completeLending,
+    createLending,
+    fetchLending,
+} from "./lending.service";
 
 export const lendingRouter = Router();
 
@@ -21,9 +27,9 @@ const handleCreateLending = async (
     next: NextFunction
 ) => {
     try {
-        const { amount, ticker, wallet_address, period } =
+        const { amount, ticker, wallet_address, period, username } =
             req.body as CreateLendingRequest;
-        await createLending(amount, ticker, wallet_address, period);
+        await createLending(amount, ticker, wallet_address, period, username);
         res.json({
             success: true,
         });
@@ -49,6 +55,23 @@ const handleCompleteLending = async (
     }
 };
 
+const handleLending = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const { username } = req.body as LendingRequest;
+        const lends = await fetchLending(username);
+        res.json({
+            success: true,
+            lends: lends,
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
 lendingRouter.post(
     "/create",
     validateQuery("body", createLendingRequestSchema),
@@ -58,4 +81,9 @@ lendingRouter.post(
     "/complete",
     validateQuery("body", completeLendingRequestSchema),
     handleCompleteLending
+);
+lendingRouter.get(
+    "/",
+    validateQuery("body", lendingRequestSchema),
+    handleLending
 );

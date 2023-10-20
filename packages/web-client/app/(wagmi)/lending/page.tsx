@@ -3,18 +3,36 @@
 import { CustomField } from "@/components/shared";
 import { SendTransaction } from "@/components/wagmi";
 import { CreateYupSchema } from "@/utils/functions";
-import { createLending } from "@/utils/services/api";
+import { createLending, fetchLends } from "@/utils/services/api";
 import { useUser } from "@/utils/store";
 import { CustomFieldTypes, FieldClassnames } from "@/utils/types/shared.types";
 import { parseEther } from "ethers";
 import { Form, Formik } from "formik";
-import { useCallback, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import * as Yup from "yup";
 
 const LendingPage: React.FC = () => {
   const [sendTx, setSendTx] = useState<bigint | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+
   const { user } = useUser();
+  const { push, replace } = useRouter();
+
+  useEffect(() => {
+    if (!user) {
+      replace("/sign-in");
+    } else {
+      (async () => {
+        const _lends = await fetchLends(user.username);
+        console.log(_lends);
+        // setLoans(_loans);
+      })();
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
   const CLASSNAMES = useMemo<FieldClassnames>(
     () => ({
       wrapper: "w-full",
@@ -107,7 +125,8 @@ const LendingPage: React.FC = () => {
           wallet_address,
           values.ticker,
           values.amount,
-          +values.period
+          +values.period,
+          user!.username
         );
       } catch (error) {
         console.error(error);

@@ -14,6 +14,7 @@ export const createLendingRequestSchema = yup
             .trim()
             .required("wallet_address is required"),
         period: yup.number().required("period is required"),
+        username: yup.string().trim().required("username is required"),
     })
     .strict();
 
@@ -23,10 +24,18 @@ export type CreateLendingRequest = yup.InferType<
 
 export const completeLendingRequestSchema = yup
     .object({
-        id: yup.string().trim().required("wallet_address is required"),
+        id: yup.string().trim().required("id is required"),
     })
     .strict();
 
 export type CompleteLendingRequest = yup.InferType<
     typeof completeLendingRequestSchema
 >;
+
+export const lendingRequestSchema = yup
+    .object({
+        username: yup.string().trim().required("username is required"),
+    })
+    .strict();
+
+export type LendingRequest = yup.InferType<typeof lendingRequestSchema>;
