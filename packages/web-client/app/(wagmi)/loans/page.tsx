@@ -101,7 +101,7 @@ const LoansPage: React.FC = () => {
                 <p>Status: {loan.status}</p>
                 <p>Warning Number: {loan.warning_intensity}</p>
 
-                {loan.status === "accepted" && (
+                {loan.status === "accepted" ? (
                   <button
                     type="button"
                     className="border bg-neutral-900 text-white rounded-md mt-4 px-4 py-4 w-full"
@@ -116,6 +116,15 @@ const LoansPage: React.FC = () => {
                   >
                     {loading ? "loading..." : "Repay Loan"}
                   </button>
+                ) : (
+                  loan.status === "bidding" && (
+                    <Link
+                      href={`/loans/bids/${loan.id}`}
+                      className="border bg-neutral-900 block text-center text-white rounded-md mt-4 px-4 py-4 w-full"
+                    >
+                      View bids
+                    </Link>
+                  )
                 )}
               </article>
             ))

@@ -9,22 +9,25 @@ import {
     bidRequestSchema,
     bidsRequestSchema,
     type BidsRequest,
+    bidItemSchema,
+    type BidItemRequest,
 } from "./bids.schema";
-import { createBidItems, fetchBidItems, fetchBids } from "./bids.service";
+import { createBid, fetchBidItem, fetchBids } from "./bids.service";
 import { validateQuery } from "../middlewares";
 
 export const bidsRouter = Router();
 
-const handleFetchBidsItems = async (
-    _req: Request,
+const handleFetchBidsItem = async (
+    req: Request,
     res: Response,
     next: NextFunction
 ) => {
     try {
-        const items = await fetchBidItems();
+        const { id } = req.params as BidItemRequest;
+        const item = await fetchBidItem(id);
         res.json({
             success: true,
-            items: items,
+            item: item,
         });
     } catch (err) {
         next(err);
@@ -37,8 +40,8 @@ const handleCreateBid = async (
     next: NextFunction
 ) => {
     try {
-        const { loan_id, amount } = req.body as BidRequest;
-        await createBidItems(loan_id, amount);
+        const { loan_id, amount, wallet_address } = req.body as BidRequest;
+        await createBid(loan_id, amount, wallet_address);
         res.json({
             success: true,
         });
@@ -53,7 +56,7 @@ const handleFetchBids = async (
     next: NextFunction
 ) => {
     try {
-        const { loan_id } = req.body as BidsRequest;
+        const { loan_id } = req.params as BidsRequest;
         const bids = await fetchBids(loan_id);
         res.json({
             success: true,
@@ -64,10 +67,14 @@ const handleFetchBids = async (
     }
 };
 
-bidsRouter.get("/", handleFetchBidsItems);
 bidsRouter.post("/", validateQuery("body", bidRequestSchema), handleCreateBid);
 bidsRouter.get(
+    "/loan/:id",
+    validateQuery("params", bidItemSchema),
+    handleFetchBidsItem
+);
+bidsRouter.get(
     "/:loan_id",
-    validateQuery("body", bidsRequestSchema),
+    validateQuery("params", bidsRequestSchema),
     handleFetchBids
 );
