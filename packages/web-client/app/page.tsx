@@ -8,7 +8,7 @@ const pixelifySanse = Pixelify_Sans({
 
 const HomePage: React.FC = () => {
   return (
-    <section>
+    <main className="flex flex-col items-center justify-center h-full">
       <h2
         className={`text-9xl ${pixelifySanse.className} font-bold text-center`}
       >
@@ -17,7 +17,7 @@ const HomePage: React.FC = () => {
       <h3 className={`text-6xl ${pixelifySanse.className} text-center mt-8`}>
         Borrow. Reputation. Auction. Lend.
       </h3>
-    </section>
+    </main>
   );
 };
 

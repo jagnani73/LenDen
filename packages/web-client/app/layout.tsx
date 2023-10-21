@@ -23,7 +23,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={syne.className}>
         <Navbar />
-        {children}
+        <section className="h-full">{children}</section>
         <Footer />
       </body>
     </html>

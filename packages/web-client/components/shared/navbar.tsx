@@ -66,6 +66,24 @@ const Navbar: React.FC = () => {
           ],
         };
       }
+      case "/loans/borrow": {
+        return {
+          routes: [
+            {
+              content: "Active Loans",
+              href: "/loans",
+            },
+            {
+              content: "Lendings",
+              href: "/lendings",
+            },
+            {
+              content: "Active Biddings",
+              href: "/loans/bids",
+            },
+          ],
+        };
+      }
 
       default:
         return {

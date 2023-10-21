@@ -13,7 +13,13 @@ import { useConnect, useSendTransaction, useSwitchNetwork } from "wagmi";
 import * as Yup from "yup";
 import { parseEther } from "ethers";
 import { ContractWrite } from "@/components/wagmi";
-import Link from "next/link";
+import { Pixelify_Sans } from "next/font/google";
+
+const pixelifySanse = Pixelify_Sans({
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "500", "600"],
+});
 
 const BorrowPage: React.FC = () => {
   const { user } = useUser();
@@ -39,9 +45,10 @@ const BorrowPage: React.FC = () => {
 
   const CLASSNAMES = useMemo<FieldClassnames>(
     () => ({
-      wrapper: "w-full",
-      input: "border border-neutral-900 rounded-md px-4 py-4 w-full",
-      description: "text-red-600 text-sm font-medium my-0.5 pl-1",
+      wrapper: "w-full bg-transparent mt-2",
+      input:
+        "border-b border-green-yellow text-sm bg-transparent px-1 py-2 w-full outline-none",
+      description: "text-red-700 text-xs font-medium my-0.5 pl-1",
     }),
     []
   );
@@ -251,14 +258,12 @@ const BorrowPage: React.FC = () => {
   );
 
   return (
-    <main className="w-full">
-      <Link href="/loans">View my loans</Link>
-
-      <p className="my-8 text-center text-4xl">
-        Take an{" "}
+    <main className="w-full h-full p-10">
+      <h2 className={`text-6xl ${pixelifySanse.className}`}>
+        An{" "}
         <button
           type="button"
-          className="font-bold hover:underline"
+          className="font-bold underline hover:decoration-green-yellow transition-all"
           onClick={() => setForm("nft")}
           disabled={form === "nft"}
         >
@@ -267,13 +272,13 @@ const BorrowPage: React.FC = () => {
         or a{" "}
         <button
           type="button"
-          className="font-bold hover:underline"
+          className="font-bold underline hover:decoration-green-yellow transition-all"
           onClick={() => setForm("token")}
           disabled={form === "token"}
         >
           Token based loan
         </button>
-      </p>
+      </h2>
 
       {form && (
         <div className="flex flex-col gap-x-4 justify-center items-center">
@@ -286,7 +291,7 @@ const BorrowPage: React.FC = () => {
             )}
           >
             {({ errors, touched }) => (
-              <Form className="w-96 border border-neutral-600 rounded-md p-6 mt-12">
+              <Form className="w-96 border-2 border-green-yellow bg-ghost-white p-6 mt-10">
                 <h1 className="text-5xl mb-4 text-center">
                   {form === "nft" ? "NFT Loan" : "Token Loan"}
                 </h1>
@@ -315,7 +320,7 @@ const BorrowPage: React.FC = () => {
                 </div>
 
                 {evaluation && (
-                  <p className="my-3 text-sm">
+                  <p className="mt-4 text-sm">
                     You will get {evaluation.output_amount}{" "}
                     {evaluation.output_ticker} at an interest rate of{" "}
                     {evaluation.interest}% for {evaluation.period} weeks, making
@@ -326,7 +331,7 @@ const BorrowPage: React.FC = () => {
 
                 <button
                   type={evaluation ? "button" : "submit"}
-                  className="border bg-neutral-900 text-white rounded-md mt-6 px-4 py-4 w-full"
+                  className="bg-green-yellow text-black text-xl mt-2 font-medium px-4 py-4 w-full"
                   disabled={
                     (!evaluation && Object.keys(errors).length > 0) || loading
                   }
