@@ -9,6 +9,7 @@ import { useConnect, useSendTransaction, useSwitchNetwork } from "wagmi";
 import { parseEther } from "ethers";
 import Link from "next/link";
 import { PrettyNumber, TimestampParser } from "@/utils/functions";
+import Image from "next/image";
 import { Pixelify_Sans } from "next/font/google";
 
 const pixelifySanse = Pixelify_Sans({
@@ -77,7 +78,9 @@ const LoansPage: React.FC = () => {
       </h2>
 
       {!loans ? (
-        <p>loading</p>
+        <figure className="flex items-center justify-center w-full h-full mt-32">
+          <Image height={160} width={160} alt="loader" src="/loader.gif" />
+        </figure>
       ) : (
         <div className="grid grid-cols-4 gap-20 mt-20">
           {!loans.length ? (

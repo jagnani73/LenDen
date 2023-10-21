@@ -46,9 +46,10 @@ const RootLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <meta name="msapplication-config" content="/site/browserconfig.xml" />
         <meta name="theme-color" content="#ffffff"></meta>
       </head>
+
       <body className={syne.className}>
         <Navbar />
-        <section className="w-full h-full flex-1">{children}</section>
+        <section className="w-full min-h-full flex-1">{children}</section>
         <Footer />
       </body>
     </html>

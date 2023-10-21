@@ -8,7 +8,7 @@ const pixelifySanse = Pixelify_Sans({
 
 const HomePage: React.FC = () => {
   return (
-    <main className="flex flex-col items-center justify-center h-full">
+    <main className="min-h-full self-center my-auto">
       <h2
         className={`text-9xl ${pixelifySanse.className} font-bold text-center`}
       >

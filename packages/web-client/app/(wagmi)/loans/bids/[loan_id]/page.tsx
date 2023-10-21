@@ -100,7 +100,9 @@ const LoadIDPage: React.FC<{ params: { loan_id: string } }> = ({
       </h2>
 
       {!bids || !item ? (
-        <p>loading</p>
+        <figure className="flex items-center justify-center w-full h-full mt-32">
+          <Image height={160} width={160} alt="loader" src="/loader.gif" />
+        </figure>
       ) : (
         <div className="w-full flex items-start gap-16 mt-20">
           {nft && (
