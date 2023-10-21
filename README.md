@@ -71,6 +71,23 @@ LenDen streamlines cross-chain lending and borrowing. Users collateralize tokens
 
 A simplified, yet secure, gateway to expanded liquidity and financial flexibility.
 
+It has a comprehensive user flow through the web application. The following diagrams explain the flow:
+ 
+### 1. **User Flow**
+
+<div align="center">
+  <img alt="LenDen Flow 1" src="./packages/web-client/public/readme/flow-1.png" height="600" />
+</div>
+&nbsp
+
+
+### 2. **Features Flow**
+<div align="center">
+  <img alt="LenDen Flow 2" src="./packages/web-client/public/readme/flow-2.png" height="800" />
+</div>
+
+
+
 # 📜 *License*
 
 `LenDen` is available under the MIT license. See the [`LICENSE`](./LICENSE) file for more info.
