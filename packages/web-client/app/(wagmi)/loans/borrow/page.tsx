@@ -14,6 +14,7 @@ import * as Yup from "yup";
 import { parseEther } from "ethers";
 import { ContractWrite } from "@/components/wagmi";
 import { Pixelify_Sans } from "next/font/google";
+import { useRouter } from "next/navigation";
 
 const pixelifySanse = Pixelify_Sans({
   subsets: ["latin"],
@@ -23,6 +24,8 @@ const pixelifySanse = Pixelify_Sans({
 
 const BorrowPage: React.FC = () => {
   const { user } = useUser();
+
+  const { push } = useRouter();
 
   const { connect, connectors } = useConnect();
   const { switchNetwork } = useSwitchNetwork();
@@ -245,6 +248,7 @@ const BorrowPage: React.FC = () => {
           });
         }
         await acceptLoan(id);
+        push("/loans");
       } catch (error) {
         console.error(error);
       } finally {
