@@ -4,9 +4,9 @@
 
 html,
 body {
-  @apply w-full min-h-screen p-0 m-0;
+  @apply w-full p-0 m-0;
 }
 
 body {
-  @apply bg-dots min-h-screen flex flex-col justify-between bg-ghost-white;
+  @apply bg-dots flex flex-col justify-between min-h-screen bg-ghost-white;
 }

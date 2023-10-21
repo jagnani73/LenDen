@@ -42,7 +42,7 @@ const LendingPage: React.FC = () => {
   }, []);
 
   return (
-    <main className="w-full h-full p-10">
+    <main className="flex-1 w-full h-full p-10">
       <h2 className={`text-6xl ${pixelifySanse.className}`}>
         Your active lendings
       </h2>

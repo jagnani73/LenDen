@@ -49,7 +49,7 @@ const RootLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
       <body className={syne.className}>
         <Navbar />
-        <section className="w-full min-h-full flex-1">{children}</section>
+        {children}
         <Footer />
       </body>
     </html>
