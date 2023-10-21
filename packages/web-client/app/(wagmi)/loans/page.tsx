@@ -8,7 +8,14 @@ import { useCallback, useEffect, useState } from "react";
 import { useConnect, useSendTransaction, useSwitchNetwork } from "wagmi";
 import { parseEther } from "ethers";
 import Link from "next/link";
-import { TimestampParser } from "@/utils/functions";
+import { PrettyNumber, TimestampParser } from "@/utils/functions";
+import { Pixelify_Sans } from "next/font/google";
+
+const pixelifySanse = Pixelify_Sans({
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "500", "600"],
+});
 
 const LoansPage: React.FC = () => {
   const { user } = useUser();
@@ -64,22 +71,34 @@ const LoansPage: React.FC = () => {
   );
 
   return (
-    <main className="w-full">
-      <Link href="/loans/borrow">Borrow a new loan</Link>
+    <main className="w-full h-full p-10">
+      <h2 className={`text-6xl ${pixelifySanse.className}`}>
+        Your active loans
+      </h2>
 
       {!loans ? (
         <p>loading</p>
       ) : (
-        <div className="flex gap-8 flex-wrap">
+        <div className="flex gap-8 flex-wrap items-stretch mt-20">
           {!loans.length ? (
-            <p>no loans found</p>
+            <p className="text-4xl m-auto">No loans found!</p>
           ) : (
             loans.map((loan) => (
               <article
                 key={loan.id}
-                className="mx-auto border rounded-md border-neutral-600 p-4 h-full"
+                className={`mx-auto border-2 bg-ghost-white p-4 w-80 h-full ${
+                  loan.warning_intensity === 0
+                    ? "border-green-yellow"
+                    : loan.warning_intensity === 1
+                    ? "border-red-500"
+                    : loan.warning_intensity === 2
+                    ? "border-red-700"
+                    : "border-red-900"
+                }`}
               >
-                <p>Type: {loan.type}</p>
+                <p className="uppercase font-medium text-xl mb-2">
+                  {loan.type}
+                </p>
                 <p>
                   Start Time: {TimestampParser(loan.start_time, "relative")}
                 </p>
@@ -88,23 +107,36 @@ const LoansPage: React.FC = () => {
                 </p>
                 {loan.type !== LOAN_TYPE.NFT && (
                   <p>
-                    Input: {loan.input_amount} {loan.input_ticker}
+                    Input:{" "}
+                    <span className="font-bold">
+                      {PrettyNumber(loan.input_amount as number)}{" "}
+                      {loan.input_ticker}
+                    </span>
                   </p>
                 )}
                 <p>
-                  Output Amount: {loan.output_amount} {loan.output_ticker}
+                  Output Amount:{" "}
+                  <span className="font-bold">
+                    {PrettyNumber(loan.output_amount as number)}{" "}
+                    {loan.output_ticker}
+                  </span>
                 </p>
-                <p>Interest : {loan.interest}%</p>
                 <p>
-                  To Pay: {loan.principal} {loan.output_ticker}
+                  Interest : <span className="font-bold">{loan.interest}%</span>
+                </p>
+                <p>
+                  To Pay:{" "}
+                  <span className="font-bold">
+                    {PrettyNumber(loan.principal)} {loan.output_ticker}
+                  </span>
                 </p>
                 <p>Status: {loan.status}</p>
-                <p>Warning Number: {loan.warning_intensity}</p>
+                <p>Warning Level: {loan.warning_intensity}</p>
 
                 {loan.status === "accepted" ? (
                   <button
                     type="button"
-                    className="border bg-neutral-900 text-white rounded-md mt-4 px-4 py-4 w-full"
+                    className="bg-green-yellow text-black text-xl mt-4 font-medium px-4 py-4 w-full"
                     onClick={() =>
                       repayLoanHandler(
                         loan.id,
@@ -120,7 +152,7 @@ const LoansPage: React.FC = () => {
                   loan.status === "bidding" && (
                     <Link
                       href={`/loans/bids/${loan.id}`}
-                      className="border bg-neutral-900 block text-center text-white rounded-md mt-4 px-4 py-4 w-full"
+                      className="bg-green-yellow block text-center mt-4 text-black text-xl font-medium px-4 py-4 w-full"
                     >
                       View bids
                     </Link>

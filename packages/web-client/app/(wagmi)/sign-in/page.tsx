@@ -19,9 +19,10 @@ const SignInPage: React.FC = () => {
 
   const CLASSNAMES = useMemo<FieldClassnames>(
     () => ({
-      wrapper: "w-full",
-      input: "border border-neutral-900 rounded-md px-4 py-4 w-full",
-      description: "text-red-600 text-sm font-medium my-0.5 pl-1",
+      wrapper: "w-full bg-transparent mt-2",
+      input:
+        "border-b border-green-yellow text-sm bg-transparent px-1 py-2 w-full outline-none",
+      description: "text-red-700 text-xs font-medium my-0.5 pl-1",
     }),
     []
   );
@@ -95,14 +96,14 @@ const SignInPage: React.FC = () => {
           )}
         >
           {({ errors, touched }) => (
-            <Form className="w-96 border border-neutral-600 rounded-md p-6">
+            <Form className="w-96 border-2 border-green-yellow bg-ghost-white p-6">
               <h1 className="text-5xl mb-4 text-center">GM Ser!</h1>
 
               <p className="text-center text-opacity-75 mb-4">
                 Please fill in the following details...
               </p>
 
-              <div className="flex flex-col gap-y-2 w-full">
+              <div className="flex flex-col gap-y-2 w-full my-8">
                 {FIELDS.map((field) => (
                   <CustomField
                     key={field.name}
@@ -120,7 +121,7 @@ const SignInPage: React.FC = () => {
 
               <button
                 type="submit"
-                className="border bg-neutral-900 text-white rounded-md mt-6 px-4 py-4 w-full"
+                className="bg-green-yellow text-black text-xl font-medium px-4 py-4 w-full"
                 disabled={Object.keys(errors).length > 0 || loading}
               >
                 {!loading ? "Sign In" : "loading..."}
