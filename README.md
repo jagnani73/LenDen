@@ -9,4 +9,5 @@ They require a solution where they can easily, securely, and efficiently borrow 
 
 ### 🥁🥁 *Drumroll, here...comes LenDen 🤝🤝*
 
-LenDen is a decentralized platform that supports lending and borrowing on blockchain, enabling users to utilize their NFTs or tokens as collateral effortlessly. 
+LenDen is a decentralized platform that supports lending and borrowing on blockchain, enabling users to utilize their NFTs or tokens as collateral effortlessly. Our platform offers cross-chain support to ensure that users can leverage assets across multiple blockchains to access liquidity.
+
