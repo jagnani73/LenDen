@@ -17,20 +17,19 @@ By addressing challenges mentioned in the problem statement, digital asset holde
 
 - A _Borrower_ accesses instant liquidity by placing their tokens or NFTs as collateral, ensuring timely repayment to maintain their cross-chain reputation and retain their assets.
 
--  LenDen allows _Cross-chain Borrowing_ enables users to instantly access liquidity from multiple blockchains, using their tokens or NFTs as collateral. This flexibility amplifies financial accessibility, allowing assets on one blockchain to be leveraged for loans on another, seamlessly and securely, enhancing the utility of digital assets globally.
+-  LenDen allows _Cross-chain Borrowing_ which enables users to instantly access liquidity from multiple blockchains, using their tokens or NFTs as collateral. This flexibility amplifies financial accessibility, allowing assets on one blockchain to be leveraged for loans on another, seamlessly and securely, enhancing the utility of digital assets globally.
 
-- It gives user the privilege of _Multi-Chain Lending_ allows lenders to offer liquidity across diverse blockchains, optimizing yield and portfolio diversification. Borrowers access loans by collateralizing digital assets.
+- It gives user the privilege of _Multi-Chain Lending_ that allows lenders to offer liquidity across diverse blockchains, optimizing yield and portfolio diversification. Borrowers access loans by collateralizing digital assets.
 
 # 💪 *Challenges Faced (and WAGMI!)*
 
-- *Lack of Liquidity*: Digital asset holders are unable to leverage their NFTs and tokens effectively to access liquidity.
+- *Lack of Liquidity*: Initially, we thought of maintaing the entire treasury by ourselves, but then shifted to lender-based system that we can give to the other users.
 
-- *Cross-Chain Complexity*: The process of borrowing against assets spread across multiple blockchains is intricate, making it challenging for users to access loans seamlessly.
+- *Cross-Chain Complexity*: The process of borrowing against assets spread across multiple blockchains is intricate, making it challenging for users to access loans which we integrated using Router Protocol seamlessly.
 
 - *User Experience*: Creating an intuitive, user-friendly interface that allows users to easily navigate the borrowing process, select their preferred collateral, and access loans.
 
-- *Repayment Flexibility*: Providing users with flexible repayment options to cater to the diverse needs and capabilities of digital asset holders.
-
+- *Collateral Liquidation*: In the context of the cross-chain lending and borrowing platform, collateral liquidation poses a challenge due to the inherent volatility and valuation complexities of digital assets, particularly NFTs. Accurate and fair valuation during liquidation, timely execution, and ensuring transparency while navigating through different blockchain protocols are significant hurdles.
 # 💻 *Tech Stack*
 
 - Router Protocol
