@@ -15,6 +15,6 @@ By addressing the challenges mentioned in the problem statement, digital asset h
 
 # 🧠 *Knowledge Primer*
 
-- A Lender provides liquidity across multiple blockchains, earning interest by allowing their tokens or NFTs to be used as treasury for loans.
+- A _Lender_ provides liquidity across multiple blockchains, earning interest by allowing their tokens or NFTs to be used as treasury for loans.
 
-- A Borrower accesses instant liquidity by placing their tokens or NFTs as collateral, ensuring timely repayment to maintain their cross-chain reputation and retain their assets.
+- A _Borrower_ accesses instant liquidity by placing their tokens or NFTs as collateral, ensuring timely repayment to maintain their cross-chain reputation and retain their assets.
