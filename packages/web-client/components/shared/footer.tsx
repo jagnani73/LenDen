@@ -18,15 +18,15 @@ const Footer: React.FC = () => {
 
   return (
     <footer className="px-20 py-4 bg-green-yellow">
-      <Marquee height="240" duration={7500}>
+      <Marquee height="60px" duration={7500}>
         <div className="flex w-full">
           {SPONSOR_IMAGES.map((src) => (
             <Image
               key={src}
               src={src}
               alt={src}
-              height={600}
-              width={160}
+              height={520}
+              width={120}
               className="m-auto"
             />
           ))}

@@ -15,7 +15,7 @@ const Navbar: React.FC = () => {
     switch (asPath) {
       case "/": {
         return {
-          prompt: "Get into Cross-Chain DeFi:",
+          prompt: "Get into Cross-Chain DeFi",
           routes: [
             {
               content: "Sign Up",
@@ -72,6 +72,20 @@ const Navbar: React.FC = () => {
             {
               content: "Lendings",
               href: "/lendings",
+            },
+          ],
+        };
+      }
+      case "/lendings": {
+        return {
+          routes: [
+            {
+              content: "Active Loans",
+              href: "/loans",
+            },
+            {
+              content: "New Loan",
+              href: "/loans/borrow",
             },
           ],
         };

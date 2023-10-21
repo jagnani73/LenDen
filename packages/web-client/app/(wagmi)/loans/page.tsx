@@ -79,14 +79,14 @@ const LoansPage: React.FC = () => {
       {!loans ? (
         <p>loading</p>
       ) : (
-        <div className="flex gap-8 flex-wrap items-stretch mt-20">
+        <div className="grid grid-cols-4 gap-20 flex-wrap mt-20">
           {!loans.length ? (
             <p className="text-4xl m-auto">No loans found!</p>
           ) : (
             loans.map((loan) => (
               <article
                 key={loan.id}
-                className={`mx-auto border-2 bg-ghost-white p-4 w-80 h-full ${
+                className={`mx-auto border-2 bg-ghost-white p-4 w-full h-full flex flex-col justify-between ${
                   loan.warning_intensity === 0
                     ? "border-green-yellow"
                     : loan.warning_intensity === 1
@@ -96,41 +96,44 @@ const LoansPage: React.FC = () => {
                     : "border-red-900"
                 }`}
               >
-                <p className="uppercase font-medium text-xl mb-2">
-                  {loan.type}
-                </p>
-                <p>
-                  Start Time: {TimestampParser(loan.start_time, "relative")}
-                </p>
-                <p>
-                  Tenure: {loan.period} {loan.period_unit}
-                </p>
-                {loan.type !== LOAN_TYPE.NFT && (
+                <div>
+                  <p className="uppercase font-bold text-xl mb-2">
+                    {loan.type}
+                  </p>
                   <p>
-                    Input:{" "}
+                    Start Time: {TimestampParser(loan.start_time, "relative")}
+                  </p>
+                  <p>
+                    Tenure: {loan.period} {loan.period_unit}
+                  </p>
+                  {loan.type !== LOAN_TYPE.NFT && (
+                    <p>
+                      Input:{" "}
+                      <span className="font-bold">
+                        {PrettyNumber(loan.input_amount as number)}{" "}
+                        {loan.input_ticker}
+                      </span>
+                    </p>
+                  )}
+                  <p>
+                    Output Amount:{" "}
                     <span className="font-bold">
-                      {PrettyNumber(loan.input_amount as number)}{" "}
-                      {loan.input_ticker}
+                      {PrettyNumber(loan.output_amount)} {loan.output_ticker}
                     </span>
                   </p>
-                )}
-                <p>
-                  Output Amount:{" "}
-                  <span className="font-bold">
-                    {PrettyNumber(loan.output_amount)} {loan.output_ticker}
-                  </span>
-                </p>
-                <p>
-                  Interest : <span className="font-bold">{loan.interest}%</span>
-                </p>
-                <p>
-                  To Pay:{" "}
-                  <span className="font-bold">
-                    {PrettyNumber(loan.principal)} {loan.output_ticker}
-                  </span>
-                </p>
-                <p>Status: {loan.status}</p>
-                <p>Warning Level: {loan.warning_intensity}</p>
+                  <p>
+                    Interest :{" "}
+                    <span className="font-bold">{loan.interest}%</span>
+                  </p>
+                  <p>
+                    To Pay:{" "}
+                    <span className="font-bold">
+                      {PrettyNumber(loan.principal)} {loan.output_ticker}
+                    </span>
+                  </p>
+                  <p>Status: {loan.status}</p>
+                  <p>Warning Level: {loan.warning_intensity}</p>
+                </div>
 
                 {loan.status === "accepted" ? (
                   <button

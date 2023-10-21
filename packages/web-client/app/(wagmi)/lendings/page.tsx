@@ -49,35 +49,37 @@ const LendingPage: React.FC = () => {
       {!lends ? (
         <p>loading</p>
       ) : (
-        <div className="flex gap-8 flex-wrap mt-20">
+        <div className="grid grid-cols-4 gap-20 flex-wrap mt-20">
           {!lends.length ? (
             <p className="text-4xl m-auto">No lendings found!</p>
           ) : (
             lends.map((lend) => (
               <article
                 key={lend.id}
-                className={`mx-auto border-2 bg-ghost-white p-4 w-80 h-full border-green-yellow`}
+                className={`mx-auto border-2 bg-ghost-white p-4 w-full h-full flex flex-col justify-between border-green-yellow`}
               >
-                <p>
-                  Start Time: {TimestampParser(lend.created_at, "relative")}
-                </p>
-                <p>
-                  Tenure: {lend.period} {lend.period_unit}
-                </p>
-                <p>
-                  Input:{" "}
-                  <span className="font-bold">
-                    {PrettyNumber(lend.amount)} {lend.ticker}
-                  </span>
-                </p>
-                <p>Interest : {lend.interest}%</p>
-                <p>
-                  Maturity:{" "}
-                  <span className="font-bold">
-                    {PrettyNumber(lend.maturity)} {lend.ticker}
-                  </span>
-                </p>
-                <p>Status: {lend.status}</p>
+                <div>
+                  <p>
+                    Start Time: {TimestampParser(lend.created_at, "relative")}
+                  </p>
+                  <p>
+                    Tenure: {lend.period} {lend.period_unit}
+                  </p>
+                  <p>
+                    Input:{" "}
+                    <span className="font-bold">
+                      {PrettyNumber(lend.amount)} {lend.ticker}
+                    </span>
+                  </p>
+                  <p>Interest : {lend.interest}%</p>
+                  <p>
+                    Maturity:{" "}
+                    <span className="font-bold">
+                      {PrettyNumber(lend.maturity)} {lend.ticker}
+                    </span>
+                  </p>
+                  <p>Status: {lend.status}</p>
+                </div>
 
                 {Math.floor(
                   (new Date().getTime() - new Date(lend.created_at).getTime()) /
@@ -91,7 +93,9 @@ const LendingPage: React.FC = () => {
                   >
                     {loading ? "loading..." : "Release maturity"}
                   </button>
-                ) : null}
+                ) : (
+                  <></>
+                )}
               </article>
             ))
           )}

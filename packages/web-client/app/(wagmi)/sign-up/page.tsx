@@ -112,7 +112,7 @@ const SignUpPage: React.FC = () => {
   );
 
   return (
-    <main className="flex items-center justify-center w-full">
+    <main className="h-full flex items-center justify-center w-full">
       <div className="flex flex-col gap-x-4 justify-center items-center">
         <Formik
           enableReinitialize
