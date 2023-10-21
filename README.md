@@ -51,3 +51,11 @@ LenDen streamlines cross-chain lending and borrowing. Users collateralize tokens
 - Enhanced Security: Protected transactions via encryption and smart contracts.
 
 A simplified, yet secure, gateway to expanded liquidity and financial flexibility.
+
+# 📜 *License*
+
+`LenDen` is available under the MIT license. See the [`LICENSE`](./LICENSE) file for more info.
+
+# 🤝 *Contributing*
+
+Please read [`CONTRIBUTING.md`](./CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
