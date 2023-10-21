@@ -11,7 +11,7 @@ import { CreateYupSchema } from "@/utils/functions";
 import * as Yup from "yup";
 
 const Navbar: React.FC = () => {
-  const asPath = usePathname();
+  const path = usePathname();
 
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
   const [newValues, setNewValues] = useState<string[]>(["0", "1", "2", "3"]);
@@ -53,7 +53,7 @@ const Navbar: React.FC = () => {
     prompt?: string;
     routes: { href: string; content: string }[];
   }>(() => {
-    switch (asPath) {
+    switch (path) {
       case "/": {
         return {
           prompt: "Get into Cross-Chain DeFi",
@@ -150,7 +150,7 @@ const Navbar: React.FC = () => {
           ],
         };
     }
-  }, [asPath]);
+  }, [path]);
 
   const submitHandler = useCallback(async (values: any) => {
     try {
@@ -183,58 +183,60 @@ const Navbar: React.FC = () => {
           </Link>
         ))}
 
-        <Dropdown
-          open={dropdownOpen}
-          setOpen={setDropdownOpen}
-          persist
-          trigger="hover"
-          dropdownClassname="right-0"
-          options={[
-            <Formik
-              key="drop"
-              enableReinitialize
-              onSubmit={submitHandler}
-              initialValues={{
-                notifs: newValues,
-              }}
-              validationSchema={Yup.object().shape(
-                FIELDS.reduce(CreateYupSchema, {})
-              )}
-            >
-              {({ errors, touched, values }) => (
-                <Form className="bg-ghost-white right-0 overflow-auto whitespace-nowrap px-4 py-2 border-2 border-green-yellow mt-4">
-                  {FIELDS.map((field) => (
-                    <CustomField
-                      key={field.id}
-                      {...field}
-                      description={
-                        // @ts-ignore
-                        touched[field.name] && errors[field.name]
-                          ? // @ts-ignore
-                            errors[field.name] ?? null
-                          : null
-                      }
-                      classnames={{
-                        wrapper: "flex flex-col justify-center",
-                        label: "flex gap-x-4",
-                      }}
-                      onClick={() => setNewValues(values.notifs)}
-                    />
-                  ))}
-                </Form>
-              )}
-            </Formik>,
-          ]}
-        >
-          <button className="ml-4" type="button">
-            <Image
-              src="/notification.svg"
-              alt="bell icon"
-              width={24}
-              height={24}
-            ></Image>
-          </button>
-        </Dropdown>
+        {path !== "/" && path !== "sign-in" && path !== "sign-up" && (
+          <Dropdown
+            open={dropdownOpen}
+            setOpen={setDropdownOpen}
+            persist
+            trigger="hover"
+            dropdownClassname="right-0"
+            options={[
+              <Formik
+                key="drop"
+                enableReinitialize
+                onSubmit={submitHandler}
+                initialValues={{
+                  notifs: newValues,
+                }}
+                validationSchema={Yup.object().shape(
+                  FIELDS.reduce(CreateYupSchema, {})
+                )}
+              >
+                {({ errors, touched, values }) => (
+                  <Form className="bg-ghost-white right-0 overflow-auto whitespace-nowrap px-4 py-2 border-2 border-green-yellow mt-4">
+                    {FIELDS.map((field) => (
+                      <CustomField
+                        key={field.id}
+                        {...field}
+                        description={
+                          // @ts-ignore
+                          touched[field.name] && errors[field.name]
+                            ? // @ts-ignore
+                              errors[field.name] ?? null
+                            : null
+                        }
+                        classnames={{
+                          wrapper: "flex flex-col justify-center",
+                          label: "flex gap-x-4",
+                        }}
+                        onClick={() => setNewValues(values.notifs)}
+                      />
+                    ))}
+                  </Form>
+                )}
+              </Formik>,
+            ]}
+          >
+            <button className="ml-4" type="button">
+              <Image
+                src="/notification.svg"
+                alt="bell icon"
+                width={24}
+                height={24}
+              ></Image>
+            </button>
+          </Dropdown>
+        )}
       </div>
     </nav>
   );
