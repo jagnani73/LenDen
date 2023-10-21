@@ -6,3 +6,7 @@ With the burgeoning expansion of blockchain technologies, there is a substantial
 Digital asset holders, particularly those with NFTs or tokens across multiple blockchains, lack a unified, secure, and efficient platform to leverage these assets for liquidity. 
 
 They require a solution where they can easily, securely, and efficiently borrow against their digital assets without the need to liquidate them.
+
+### 🥁🥁 *Drumroll, here...comes LenDen 🤝🤝*
+
+LenDen is a decentralized platform that supports lending and borrowing on blockchain, enabling users to utilize their NFTs or tokens as collateral effortlessly. 
