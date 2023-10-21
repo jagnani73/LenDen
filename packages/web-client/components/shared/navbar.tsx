@@ -59,10 +59,6 @@ const Navbar: React.FC = () => {
               content: "Lendings",
               href: "/lendings",
             },
-            {
-              content: "Active Biddings",
-              href: "/loans/bids",
-            },
           ],
         };
       }
@@ -76,10 +72,6 @@ const Navbar: React.FC = () => {
             {
               content: "Lendings",
               href: "/lendings",
-            },
-            {
-              content: "Active Biddings",
-              href: "/loans/bids",
             },
           ],
         };

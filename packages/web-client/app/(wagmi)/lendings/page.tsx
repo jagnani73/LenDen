@@ -1,11 +1,17 @@
 "use client";
 
-import { TimestampParser } from "@/utils/functions";
+import { PrettyNumber, TimestampParser } from "@/utils/functions";
 import { completeLend, fetchLends } from "@/utils/services/api";
 import { useUser } from "@/utils/store";
 import { Lending } from "@/utils/types/services.types";
-import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
+import { Pixelify_Sans } from "next/font/google";
+
+const pixelifySanse = Pixelify_Sans({
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "500", "600"],
+});
 
 const LendingPage: React.FC = () => {
   const { user } = useUser();
@@ -35,20 +41,22 @@ const LendingPage: React.FC = () => {
   }, []);
 
   return (
-    <main className="flex flex-col gap-x-4 justify-center items-center w-full">
-      <Link href="/lending/create">Create a new lending</Link>
+    <main className="w-full h-full p-10">
+      <h2 className={`text-6xl ${pixelifySanse.className}`}>
+        Your active lendings
+      </h2>
 
       {!lends ? (
         <p>loading</p>
       ) : (
-        <div className="flex gap-8 flex-wrap">
+        <div className="flex gap-8 flex-wrap mt-20">
           {!lends.length ? (
-            <p>no lends found</p>
+            <p className="text-4xl m-auto">No lendings found!</p>
           ) : (
             lends.map((lend) => (
               <article
                 key={lend.id}
-                className="mx-auto border rounded-md border-neutral-600 p-4 h-full"
+                className={`mx-auto border-2 bg-ghost-white p-4 w-80 h-full border-green-yellow`}
               >
                 <p>
                   Start Time: {TimestampParser(lend.created_at, "relative")}
@@ -57,11 +65,17 @@ const LendingPage: React.FC = () => {
                   Tenure: {lend.period} {lend.period_unit}
                 </p>
                 <p>
-                  Input: {lend.amount} {lend.ticker}
+                  Input:{" "}
+                  <span className="font-bold">
+                    {PrettyNumber(lend.amount)} {lend.ticker}
+                  </span>
                 </p>
                 <p>Interest : {lend.interest}%</p>
                 <p>
-                  Maturity: {lend.maturity} {lend.ticker}
+                  Maturity:{" "}
+                  <span className="font-bold">
+                    {PrettyNumber(lend.maturity)} {lend.ticker}
+                  </span>
                 </p>
                 <p>Status: {lend.status}</p>
 
@@ -71,7 +85,7 @@ const LendingPage: React.FC = () => {
                 ) >= lend.period ? (
                   <button
                     type="button"
-                    className="border bg-neutral-900 text-white rounded-md mt-4 px-4 py-4 w-full"
+                    className="bg-green-yellow text-black text-xl mt-4 font-medium px-4 py-4 w-full"
                     onClick={() => completeLendHandler(lend.id)}
                     disabled={loading}
                   >

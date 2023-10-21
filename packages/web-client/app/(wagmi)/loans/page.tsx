@@ -117,8 +117,7 @@ const LoansPage: React.FC = () => {
                 <p>
                   Output Amount:{" "}
                   <span className="font-bold">
-                    {PrettyNumber(loan.output_amount as number)}{" "}
-                    {loan.output_ticker}
+                    {PrettyNumber(loan.output_amount)} {loan.output_ticker}
                   </span>
                 </p>
                 <p>
