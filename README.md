@@ -7,9 +7,9 @@ They require a solution where they can easily, securely, and efficiently borrow 
 
 ### 🥁🥁 *Drumroll, here...comes LenDen 🤝🤝*
 
-LenDen is a decentralized platform that supports lending and borrowing on blockchain, enabling users to utilize their NFTs or tokens as collateral effortlessly. Our platform offers cross-chain support to ensure that users can leverage assets across multiple blockchains to access liquidity.
+LenDen is a decentralized platform that supports cross-chain lending and borrowing, enabling users to utilize their NFTs or tokens as collateral effortlessly. Our platform offers cross-chain support to ensure that users can leverage assets across multiple blockchains to access liquidity.
 
-By addressing the challenges mentioned in the problem statement, digital asset holders will be able to unlock the latent value in their assets, improving the liquidity and utility of NFTs and tokens across various blockchains. The solution will bridge the gap between digital asset ownership and the ability to leverage these assets for financial flexibility and growth.
+By addressing challenges mentioned in the problem statement, digital asset holders will be able to unlock the latent value in their assets, improving the liquidity and utility of NFTs and tokens across various blockchains. The solution will bridge the gap between digital asset ownership and the ability to leverage these assets for financial flexibility and growth.
 
 # 🧠 *Knowledge Primer*
 
@@ -17,7 +17,7 @@ By addressing the challenges mentioned in the problem statement, digital asset h
 
 - A _Borrower_ accesses instant liquidity by placing their tokens or NFTs as collateral, ensuring timely repayment to maintain their cross-chain reputation and retain their assets.
 
--  LenDen allows _Cross-chain borrowing_ enables users to instantly access liquidity from multiple blockchains, using their tokens or NFTs as collateral. This flexibility amplifies financial accessibility, allowing assets on one blockchain to be leveraged for loans on another, seamlessly and securely, enhancing the utility of digital assets globally.
+-  LenDen allows _Cross-chain Borrowing_ enables users to instantly access liquidity from multiple blockchains, using their tokens or NFTs as collateral. This flexibility amplifies financial accessibility, allowing assets on one blockchain to be leveraged for loans on another, seamlessly and securely, enhancing the utility of digital assets globally.
 
 - It gives user the privilege of _Multi-Chain Lending_ allows lenders to offer liquidity across diverse blockchains, optimizing yield and portfolio diversification. Borrowers access loans by collateralizing digital assets.
 
