@@ -30,3 +30,24 @@ By addressing the challenges mentioned in the problem statement, digital asset h
 - *User Experience*: Creating an intuitive, user-friendly interface that allows users to easily navigate the borrowing process, select their preferred collateral, and access loans.
 
 - *Repayment Flexibility*: Providing users with flexible repayment options to cater to the diverse needs and capabilities of digital asset holders.
+
+# 💻 *Tech Stack*
+
+- Router Protocol
+- Solidity (Avalanche + Polygon)
+- Push Protocol
+- ExpressJS
+- Supabase
+- NextJS
+- NodeJS
+- TypeScript
+
+# 📦 *Inside the box*
+
+LenDen streamlines cross-chain lending and borrowing. Users collateralize tokens or NFTs to borrow assets across multiple blockchains. Features include:
+
+- Flexible Collateral Options: Tokens or NFTs.
+- Cross-Chain Access: Seamless, diverse blockchain interactions.
+- Enhanced Security: Protected transactions via encryption and smart contracts.
+
+A simplified, yet secure, gateway to expanded liquidity and financial flexibility.
