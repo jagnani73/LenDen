@@ -56,7 +56,7 @@ export interface CustomSelectProps extends CustomFieldProps {
 
 export interface CustomRadioBoxProps extends CustomFieldProps {
   type: "radio" | "checkbox";
-  choices: { value: string; text: string }[];
+  choices: { value: string | number; text: string }[];
 }
 
 export type CustomFieldTypes =
@@ -64,3 +64,15 @@ export type CustomFieldTypes =
   | CustomTextareaProps
   | CustomSelectProps
   | CustomRadioBoxProps;
+
+export interface DropdownProps {
+  children: React.ReactNode;
+  trigger: "hover" | "click";
+  contentClassName?: string;
+  dropdownClassname?: string;
+  option?: string;
+  options: React.ReactNode[];
+  open: boolean;
+  persist?: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
