@@ -59,18 +59,16 @@ export const evaluateLoanValue = async (input: LoanEvaluateRequest) => {
             break;
         }
         case LOAN_TYPE.NFT: {
-            const { data: nftData } =
-                await CovalentService.getCovalentClient().NftService.getNftMarketFloorPrice(
-                    "avalanche-testnet",
-                    input.mint_address as string,
-                    {
-                        days: 1,
-                        quoteCurrency: "USD",
-                    }
-                );
-            if (!nftData) {
-                output_amount = Math.random();
-            }
+            await CovalentService.getCovalentClient().NftService.getNftMarketFloorPrice(
+                "avalanche-testnet",
+                input.mint_address as string,
+                {
+                    days: 1,
+                    quoteCurrency: "USD",
+                }
+            );
+
+            output_amount = Math.random();
         }
     }
     principal =

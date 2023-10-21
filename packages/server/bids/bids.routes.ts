@@ -24,10 +24,11 @@ const handleFetchBidsItem = async (
 ) => {
     try {
         const { id } = req.params as BidItemRequest;
-        const item = await fetchBidItem(id);
+        const { nft, item } = await fetchBidItem(id);
         res.json({
             success: true,
             item: item,
+            nft: nft,
         });
     } catch (err) {
         next(err);

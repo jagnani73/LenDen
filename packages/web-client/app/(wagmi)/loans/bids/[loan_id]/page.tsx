@@ -1,7 +1,7 @@
 "use client";
 
 import { CustomField } from "@/components/shared";
-import { CreateYupSchema, TimestampParser } from "@/utils/functions";
+import { CreateYupSchema, TimestampParser, Truncate } from "@/utils/functions";
 import { addBid, fetchBidItem, fetchBids } from "@/utils/services/api";
 import { useUser } from "@/utils/store";
 import { Bid, Loan } from "@/utils/types/services.types";
@@ -10,7 +10,14 @@ import { Form, Formik } from "formik";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import * as Yup from "yup";
+import { Pixelify_Sans } from "next/font/google";
+import Image from "next/image";
 
+const pixelifySanse = Pixelify_Sans({
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "500", "600"],
+});
 const LoadIDPage: React.FC<{ params: { loan_id: string } }> = ({
   params: { loan_id },
 }) => {
@@ -19,16 +26,19 @@ const LoadIDPage: React.FC<{ params: { loan_id: string } }> = ({
   const [loading, setLoading] = useState<boolean>(false);
   const [item, setItem] = useState<Loan | null>(null);
   const [bids, setBids] = useState<Bid[] | null>(null);
+  const [nft, setNft] = useState<string | null>(null);
+  const [nftError, setNFTError] = useState<boolean>(false);
 
   useEffect(() => {
     if (user && loan_id) {
       (async () => {
-        const [_bids, _item] = await Promise.all([
+        const [_bids, _itemData] = await Promise.all([
           fetchBids(loan_id),
           fetchBidItem(loan_id),
         ]);
-        if (_item) {
-          setItem(_item);
+        if (_itemData) {
+          setItem(_itemData.item);
+          setNft(_itemData.nft);
         }
         if (_bids) {
           setBids(_bids);
@@ -39,9 +49,10 @@ const LoadIDPage: React.FC<{ params: { loan_id: string } }> = ({
 
   const CLASSNAMES = useMemo<FieldClassnames>(
     () => ({
-      wrapper: "w-full",
-      input: "border border-neutral-900 rounded-md px-4 py-4 w-full",
-      description: "text-red-600 text-sm font-medium my-0.5 pl-1",
+      wrapper: "w-full bg-transparent",
+      input:
+        "border-b border-green-yellow text-xl bg-transparent px-1 py-2 w-full outline-none",
+      description: "text-red-700 text-xs font-medium my-0.5 pl-1",
     }),
     []
   );
@@ -83,27 +94,38 @@ const LoadIDPage: React.FC<{ params: { loan_id: string } }> = ({
   );
 
   return (
-    <main className="flex flex-col gap-x-4 justify-center items-center w-full">
-      <Link href="/loans">View my loans</Link>
+    <main className="w-full h-full p-10">
+      <h2 className={`text-6xl ${pixelifySanse.className}`}>
+        Currents bids made
+      </h2>
 
-      {!bids ? (
+      {!bids || !item ? (
         <p>loading</p>
       ) : (
-        <div className="flex gap-8 flex-wrap">
-          <p>Current bids</p>
+        <div className="w-full flex items-start gap-16 mt-20">
+          {nft && (
+            <figure className="flex w-1/3 bg-ghost-white border-2 border-green-yellow p-4">
+              <img
+                alt="nft"
+                onError={() => setNFTError(true)}
+                src={nftError ? "/no-nft.svg" : nft}
+                className="object-contain flex"
+              />
+            </figure>
+          )}
 
-          {item && item.status === "bidding" && (
-            <Formik
-              enableReinitialize
-              onSubmit={submitHandler}
-              initialValues={{}}
-              validationSchema={Yup.object().shape(
-                FIELDS.reduce(CreateYupSchema, {})
-              )}
-            >
-              {({ errors, touched }) => (
-                <Form className="w-96 border border-neutral-600 rounded-md p-6 mt-12">
-                  <div>
+          <div className="w-2/3 grid grid-cols-1 gap-y-4">
+            {item && item.status !== "bidding" && (
+              <Formik
+                enableReinitialize
+                onSubmit={submitHandler}
+                initialValues={{}}
+                validationSchema={Yup.object().shape(
+                  FIELDS.reduce(CreateYupSchema, {})
+                )}
+              >
+                {({ errors, touched }) => (
+                  <Form className="flex justify-start items-center gap-x-4 bg-ghost-white h-fit mb-10">
                     {FIELDS.map((field) => (
                       <CustomField
                         key={field.name}
@@ -117,36 +139,38 @@ const LoadIDPage: React.FC<{ params: { loan_id: string } }> = ({
                         }
                       />
                     ))}
-                  </div>
 
-                  <button
-                    type="submit"
-                    className="border bg-neutral-900 text-white rounded-md mt-6 px-4 py-4 w-full"
-                    disabled={Object.keys(errors).length > 0 || loading}
-                  >
-                    {loading ? "loading..." : "Add Bid"}
-                  </button>
-                </Form>
-              )}
-            </Formik>
-          )}
+                    <button
+                      type="submit"
+                      className="bg-green-yellow text-black font-medium px-4 py-3 w-96"
+                      disabled={Object.keys(errors).length > 0 || loading}
+                    >
+                      {loading ? "loading..." : "Add Bid"}
+                    </button>
+                  </Form>
+                )}
+              </Formik>
+            )}
 
-          {!bids.length ? (
-            <p>no bids found</p>
-          ) : (
-            bids.map((bid) => (
-              <article
-                key={bid.id}
-                className="mx-auto border rounded-md border-neutral-600 p-4 h-full"
-              >
-                <p>Made: {TimestampParser(bid.created_at, "relative")}</p>
-                <p>
-                  Amount: {bid.amount} {item?.input_ticker}
-                </p>
-                <p>By: {bid.wallet_address}</p>
-              </article>
-            ))
-          )}
+            {!bids.length ? (
+              <p className="text-4xl m-auto">No lendings found!</p>
+            ) : (
+              bids.map((bid) => (
+                <article
+                  key={bid.id}
+                  className="border-2 bg-ghost-white p-4 w-full grid grid-cols-3 gap-x-4 border-green-yellow h-fit first-of-type:bg-green-yellow first-of-type:font-bold"
+                >
+                  <p title={bid.wallet_address}>
+                    {Truncate(bid.wallet_address)}
+                  </p>
+                  <p>
+                    {bid.amount} {item?.input_ticker}
+                  </p>
+                  <p>{TimestampParser(bid.created_at, "relative")}</p>
+                </article>
+              ))
+            )}
+          </div>
         </div>
       )}
     </main>

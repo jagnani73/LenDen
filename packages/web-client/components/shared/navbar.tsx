@@ -93,7 +93,20 @@ const Navbar: React.FC = () => {
 
       default:
         return {
-          routes: [],
+          routes: [
+            {
+              content: "Active Loans",
+              href: "/loans",
+            },
+            {
+              content: "New Loan",
+              href: "/loans/borrow",
+            },
+            {
+              content: "Lendings",
+              href: "/lendings",
+            },
+          ],
         };
     }
   }, [asPath]);

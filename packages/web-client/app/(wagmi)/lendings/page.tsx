@@ -49,7 +49,7 @@ const LendingPage: React.FC = () => {
       {!lends ? (
         <p>loading</p>
       ) : (
-        <div className="grid grid-cols-4 gap-20 flex-wrap mt-20">
+        <div className="grid grid-cols-4 gap-20 mt-20">
           {!lends.length ? (
             <p className="text-4xl m-auto">No lendings found!</p>
           ) : (

@@ -33,6 +33,11 @@ export enum TOKEN_ID {
     MATIC = 3890,
 }
 
+export enum COVALENT_CHAIN_NAMES {
+    AVAX = "avalanche-testnet",
+    MATIC = "matic-mumbai",
+}
+
 export const loanEvaluateRequestSchema = yup
     .object()
     .shape({

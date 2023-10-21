@@ -1,5 +1,6 @@
+import { COVALENT_CHAIN_NAMES } from "../loans/loans.schema";
 import { sendNotification } from "../notifications/notifications.services";
-import { SupabaseService } from "../services";
+import { CovalentService, SupabaseService } from "../services";
 
 export const fetchBidItem = async (id: string) => {
     const { data, error } = await SupabaseService.getSupabase()
@@ -11,7 +12,22 @@ export const fetchBidItem = async (id: string) => {
         console.error(error);
         throw error;
     }
-    return data;
+    const { data: nftData } =
+        await CovalentService.getCovalentClient().NftService.getNftMetadataForGivenTokenIdForContract(
+            COVALENT_CHAIN_NAMES[
+                data.input_ticker as keyof typeof COVALENT_CHAIN_NAMES
+            ],
+            data.mint_address,
+            data.token_id,
+            {
+                noMetadata: true,
+                withUncached: true,
+            }
+        );
+    return {
+        item: data,
+        nft: nftData.items[0].nft_data.external_data.image_1024,
+    };
 };
 
 export const createBid = async (

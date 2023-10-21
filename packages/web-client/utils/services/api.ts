@@ -207,7 +207,10 @@ export const fetchBidItem = async (id: string) => {
       },
     });
     const data = await response.json();
-    return data.item as Loan;
+    return { item: data.item, nft: data.nft } as {
+      item: Loan;
+      nft: string;
+    };
   } catch (error) {
     console.error(error);
     return;
