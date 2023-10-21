@@ -18,3 +18,7 @@ By addressing the challenges mentioned in the problem statement, digital asset h
 - A _Lender_ provides liquidity across multiple blockchains, earning interest by allowing their tokens or NFTs to be used as treasury for loans.
 
 - A _Borrower_ accesses instant liquidity by placing their tokens or NFTs as collateral, ensuring timely repayment to maintain their cross-chain reputation and retain their assets.
+
+-  LenDen allows _Cross-chain borrowing_ enables users to instantly access liquidity from multiple blockchains, using their tokens or NFTs as collateral. This flexibility amplifies financial accessibility, allowing assets on one blockchain to be leveraged for loans on another, seamlessly and securely, enhancing the utility of digital assets globally.
+
+- It gives user the privilege of _Multi-Chain Lending_ allows lenders to offer liquidity across diverse blockchains, optimizing yield and portfolio diversification. Borrowers access loans by collateralizing digital assets.
