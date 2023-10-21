@@ -13,3 +13,8 @@ LenDen is a decentralized platform that supports lending and borrowing on blockc
 
 By addressing the challenges mentioned in the problem statement, digital asset holders will be able to unlock the latent value in their assets, improving the liquidity and utility of NFTs and tokens across various blockchains. The solution will bridge the gap between digital asset ownership and the ability to leverage these assets for financial flexibility and growth.
 
+# 🧠 *Knowledge Primer*
+
+- A Lender provides liquidity across multiple blockchains, earning interest by allowing their tokens or NFTs to be used as treasury for loans.
+
+- A Borrower accesses instant liquidity by placing their tokens or NFTs as collateral, ensuring timely repayment to maintain their cross-chain reputation and retain their assets.
