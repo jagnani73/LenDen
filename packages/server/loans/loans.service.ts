@@ -144,7 +144,7 @@ export const getLoansForUser = async (username: string) => {
         .from("loans")
         .select()
         .eq("username", username)
-        .neq("status", "evaluated")
+        .neq("status", "evaluation")
         .order("start_time", { ascending: true });
     if (error) {
         console.error(error);

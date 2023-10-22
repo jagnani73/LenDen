@@ -9,8 +9,12 @@ import { CustomFieldTypes } from "@/utils/types/shared.types";
 import { Form, Formik } from "formik";
 import { CreateYupSchema } from "@/utils/functions";
 import * as Yup from "yup";
+import { optOutOfNotification } from "@/utils/services/api";
+import { useUser } from "@/utils/store";
 
 const Navbar: React.FC = () => {
+  const { user } = useUser();
+
   const path = usePathname();
 
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
@@ -46,8 +50,18 @@ const Navbar: React.FC = () => {
   );
 
   useEffect(() => {
-    console.log(newValues);
-  }, [newValues]);
+    if (!dropdownOpen && user) {
+      (async () => {
+        try {
+          await optOutOfNotification(newValues, user.username);
+        } catch (error) {
+          console.error(error);
+        }
+      })();
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dropdownOpen, user]);
 
   const NAVIGATION = useMemo<{
     prompt?: string;
@@ -183,7 +197,7 @@ const Navbar: React.FC = () => {
           </Link>
         ))}
 
-        {path !== "/" && path !== "sign-in" && path !== "sign-up" && (
+        {path !== "/" && path !== "/sign-in" && path !== "/sign-up" && (
           <Dropdown
             open={dropdownOpen}
             setOpen={setDropdownOpen}
@@ -202,28 +216,30 @@ const Navbar: React.FC = () => {
                   FIELDS.reduce(CreateYupSchema, {})
                 )}
               >
-                {({ errors, touched, values }) => (
-                  <Form className="bg-ghost-white right-0 overflow-auto whitespace-nowrap px-4 py-2 border-2 border-green-yellow mt-4">
-                    {FIELDS.map((field) => (
-                      <CustomField
-                        key={field.id}
-                        {...field}
-                        description={
-                          // @ts-ignore
-                          touched[field.name] && errors[field.name]
-                            ? // @ts-ignore
-                              errors[field.name] ?? null
-                            : null
-                        }
-                        classnames={{
-                          wrapper: "flex flex-col justify-center",
-                          label: "flex gap-x-4",
-                        }}
-                        onClick={() => setNewValues(values.notifs)}
-                      />
-                    ))}
-                  </Form>
-                )}
+                {({ errors, touched, values }) => {
+                  setNewValues(values.notifs);
+                  return (
+                    <Form className="bg-ghost-white right-0 overflow-auto whitespace-nowrap px-4 py-2 border-2 border-green-yellow mt-4">
+                      {FIELDS.map((field) => (
+                        <CustomField
+                          key={field.id}
+                          {...field}
+                          description={
+                            // @ts-ignore
+                            touched[field.name] && errors[field.name]
+                              ? // @ts-ignore
+                                errors[field.name] ?? null
+                              : null
+                          }
+                          classnames={{
+                            wrapper: "flex flex-col justify-center",
+                            label: "flex gap-x-4",
+                          }}
+                        />
+                      ))}
+                    </Form>
+                  );
+                }}
               </Formik>,
             ]}
           >

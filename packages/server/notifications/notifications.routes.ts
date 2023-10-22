@@ -8,7 +8,7 @@ import {
     sendNotification,
     userSpecificNotification,
     createChannelSettings,
-    optOutOfSettings,
+    optSettings,
     sendSettingsNotification,
 } from "./notifications.services";
 
@@ -69,14 +69,14 @@ const handleCreateChannelSettings = async (
     }
 };
 
-const handleOptOutOfSettings = async (
+const handleOptSettings = async (
     req: Request,
     res: Response,
     next: NextFunction
 ) => {
     try {
-        const { index, userId } = req.body;
-        const response = await optOutOfSettings(index, userId);
+        const { opted_settings, username } = req.body;
+        const response = await optSettings(opted_settings, username);
         res.json({
             success: true,
             data: response,
@@ -106,7 +106,7 @@ const handleSendSettingsNotification = async (
 notificationRouter.post("/send", handleSendNotification);
 notificationRouter.post("/send/user", handleUserSpecificNotification);
 notificationRouter.post("/settings", handleCreateChannelSettings);
-notificationRouter.post("/settings/opt-out", handleOptOutOfSettings);
+notificationRouter.post("/settings/opted", handleOptSettings);
 notificationRouter.post(
     "/settings/notification",
     handleSendSettingsNotification

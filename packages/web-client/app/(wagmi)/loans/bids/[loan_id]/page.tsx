@@ -117,7 +117,7 @@ const LoadIDPage: React.FC<{ params: { loan_id: string } }> = ({
           )}
 
           <div className="w-2/3 grid grid-cols-1 gap-y-4">
-            {item && item.status !== "bidding" && (
+            {item && item.status === "bidding" && (
               <Formik
                 enableReinitialize
                 onSubmit={submitHandler}

@@ -75,42 +75,29 @@ export const createChannelSettings = async () => {
     return setting.transactionHash;
 };
 
-export const optOutOfSettings = async (index: number, userId: string) => {
-    const { data, error } = await SupabaseService.getSupabase()
+export const optSettings = async (
+    opted_settings: string[],
+    username: string
+) => {
+    const { error } = await SupabaseService.getSupabase()
         .from("users")
         .select("notification_settings")
-        .eq("id", userId)
+        .eq("username", username)
         .single();
 
     if (error) {
-        console.log(error);
-    } else {
-        const existingSettings = data.notification_settings;
-
-        if (existingSettings && Array.isArray(existingSettings)) {
-            const indexToRemove = index;
-
-            if (indexToRemove >= 0 && indexToRemove < existingSettings.length) {
-                existingSettings.splice(indexToRemove, 1);
-                const { data: updateData, error: updateError } =
-                    await SupabaseService.getSupabase()
-                        .from("users")
-                        .update({ settings: existingSettings })
-                        .eq("id", userId)
-                        .select("notification_settings")
-                        .single();
-
-                if (updateError) {
-                    console.log(error);
-                } else {
-                    return updateData.notification_settings;
-                }
-            } else {
-                console.log("Index out of bounds.");
-            }
-        } else {
-            console.log("Settings is not an array or does not exist.");
-        }
+        console.error(error);
+        throw error;
+    }
+    const { error: updateError } = await SupabaseService.getSupabase()
+        .from("users")
+        .update({ settings: opted_settings.map((val) => +val) })
+        .eq("username", username)
+        .select("notification_settings")
+        .single();
+    if (updateError) {
+        console.error(error);
+        throw error;
     }
 };
 
@@ -128,6 +115,7 @@ export const sendSettingsNotification = async (index: number) => {
 
     if (error) {
         console.error(error);
+        throw error;
     }
     if (data) {
         const recipients = data.map(

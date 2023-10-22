@@ -283,3 +283,25 @@ export const sendUserSpecificNotification = async (
     return;
   }
 };
+
+export const optOutOfNotification = async (
+  opted_settings: string[],
+  username: string
+) => {
+  try {
+    await fetch(`${baseURL}/notifications/settings/opted`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: username,
+        opted_settings: opted_settings,
+      }),
+    });
+    return;
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+};
